@@ -24,7 +24,7 @@ Either
 	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/26.3.2018/chainfiles.zip
 	unzip chainfiles.zip
 	cd ..
-	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/4.0.3.0/linux-x64.zip
+	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/4.0.3.0.01/linux-x64.zip
 	unzip linux-x64.zip
 	
 	./hexxcoind -daemon
