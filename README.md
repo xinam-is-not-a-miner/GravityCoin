@@ -39,9 +39,8 @@ Net Parameters
 Installation folder
 ----------------
 * Windows: C:\Users\Username\AppData\Roaming\hexxcoin
-* Mac:/Library/Application Support/hexxcoin
+* Mac: /Library/Application Support/hexxcoin
 * Unix: /.hexxcoin
-
 
 
 
@@ -55,8 +54,8 @@ Debian/Ubuntu Linux Daemon Build Instructions
 	free
 	dd if=/dev/zero of=/var/swap.img bs=2048 count=1048576
 	mkswap /var/swap.img
-	swapon /var/swap.img   
-	free   
+	swapon /var/swap.img
+	free
 
 
 	sudo apt-get update
@@ -115,15 +114,8 @@ Example hexxcoin.conf Configuration
 	daemon=1
 	xnode=1
 	externalip=
-	znodeprivkey=
+	xnodeprivkey=
 	addnode=node_ip
 	rpcallowip=127.0.0.1
 	rpcuser=MAKEUPYOUROWNUSERNAME
 	rpcpassword=MAKEUPYOUROWNPASSWORD
-	
-
-	
-	
-
-
-
