@@ -21,7 +21,7 @@ Either
 	mkdir .hexxcoin
 	cd .hexxcoin
 	sudo apt-get install unzip
-	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/8.4.2018/chainfiles.zip
+	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/22.4.2018/chainfiles.zip
 	unzip chainfiles.zip
 	cd ..
 	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/4.0.3.0/linux-x64.zip
