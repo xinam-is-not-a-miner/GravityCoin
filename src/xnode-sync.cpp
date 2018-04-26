@@ -22,20 +22,22 @@ bool CXnodeSync::CheckNodeHeight(CNode *pnode, bool fDisconnectStuckNodes) {
     if (!GetNodeStateStats(pnode->id, stats) || stats.nCommonHeight == -1 || stats.nSyncHeight == -1) return false; // not enough info about this peer
 
     // Check blocks and headers, allow a small error margin of 1 block
-    if (pCurrentBlockIndex->nHeight - 1 > stats.nCommonHeight)
-    {
+    if (pCurrentBlockIndex->nHeight - 1 > stats.nCommonHeight) {
         // This peer probably stuck, don't sync any additional data from it
-        if (fDisconnectStuckNodes)
-        {
+        if (fDisconnectStuckNodes) {
             // Disconnect to free this connection slot for another peer.
             pnode->fDisconnect = true;
             LogPrintf("CXnodeSync::CheckNodeHeight -- disconnecting from stuck peer, nHeight=%d, nCommonHeight=%d, peer=%d\n",
                       pCurrentBlockIndex->nHeight, stats.nCommonHeight, pnode->id);
-        } else
-        {
+        } else {
             LogPrintf("CXnodeSync::CheckNodeHeight -- skipping stuck peer, nHeight=%d, nCommonHeight=%d, peer=%d\n",
                       pCurrentBlockIndex->nHeight, stats.nCommonHeight, pnode->id);
         }
+        return false;
+    } else if (pCurrentBlockIndex->nHeight < stats.nSyncHeight - 1) {
+        // This peer announced more headers than we have blocks currently
+        LogPrintf("CXnodeSync::CheckNodeHeight -- skipping peer, who announced more headers than we have blocks currently, nHeight=%d, nSyncHeight=%d, peer=%d\n",
+                  pCurrentBlockIndex->nHeight, stats.nSyncHeight, pnode->id);
         return false;
     }
 
@@ -140,8 +142,6 @@ std::string CXnodeSync::GetAssetName() {
     switch (nRequestedXnodeAssets) {
         case (XNODE_SYNC_INITIAL):
             return "XNODE_SYNC_INITIAL";
-        case (XNODE_SYNC_SPORKS):
-            return "XNODE_SYNC_SPORKS";
         case (XNODE_SYNC_LIST):
             return "XNODE_SYNC_LIST";
         case (XNODE_SYNC_MNW):
@@ -162,10 +162,6 @@ void CXnodeSync::SwitchToNextAsset() {
             break;
         case (XNODE_SYNC_INITIAL):
             ClearFulfilledRequests();
-            nRequestedXnodeAssets = XNODE_SYNC_SPORKS;
-            LogPrintf("CXnodeSync::SwitchToNextAsset -- Starting %s\n", GetAssetName());
-            break;
-        case (XNODE_SYNC_SPORKS):
             nTimeLastXnodeList = GetTime();
             nRequestedXnodeAssets = XNODE_SYNC_LIST;
             LogPrintf("CXnodeSync::SwitchToNextAsset -- Starting %s\n", GetAssetName());
@@ -190,8 +186,6 @@ std::string CXnodeSync::GetSyncStatus() {
     switch (xnodeSync.nRequestedXnodeAssets) {
         case XNODE_SYNC_INITIAL:
             return _("Synchronization pending...");
-        case XNODE_SYNC_SPORKS:
-            return _("Synchronizing sporks...");
         case XNODE_SYNC_LIST:
             return _("Synchronizing xnodes...");
         case XNODE_SYNC_MNW:
@@ -265,20 +259,14 @@ void CXnodeSync::ProcessTick() {
 
         //try syncing again
         if (IsFailed()) {
-            if (nTimeLastFailure + (1 * 60) < GetTime()) { // 1 minute cooldown after failed sync
+            if (nTimeLastFailure + (15) < GetTime()) { // 1 minute cooldown after failed sync
                 Reset();
             }
             return;
         }
     }
 
-    if (Params().NetworkIDString() != CBaseChainParams::REGTEST && !IsBlockchainSynced() && nRequestedXnodeAssets > XNODE_SYNC_SPORKS) {
-        nTimeLastXnodeList = GetTime();
-        nTimeLastPaymentVote = GetTime();
-        nTimeLastGovernanceItem = GetTime();
-        return;
-    }
-    if (nRequestedXnodeAssets == XNODE_SYNC_INITIAL || (nRequestedXnodeAssets == XNODE_SYNC_SPORKS && IsBlockchainSynced())) {
+    if (nRequestedXnodeAssets == XNODE_SYNC_INITIAL && IsBlockchainSynced()) {
         SwitchToNextAsset();
     }
 
@@ -292,23 +280,6 @@ void CXnodeSync::ProcessTick() {
         // initialted from another node, so skip it too.
         if (pnode->fXnode || (fXNode && pnode->fInbound)) continue;
 
-        // QUICK MODE (REGTEST ONLY!)
-        if (Params().NetworkIDString() == CBaseChainParams::REGTEST) {
-            if (nRequestedXnodeAttempt <= 2) {
-                pnode->PushMessage(NetMsgType::GETSPORKS); //get current network sporks
-            } else if (nRequestedXnodeAttempt < 4) {
-                mnodeman.DsegUpdate(pnode);
-            } else if (nRequestedXnodeAttempt < 6) {
-                int nMnCount = mnodeman.CountXnodes();
-                pnode->PushMessage(NetMsgType::XNODEPAYMENTSYNC, nMnCount); //sync payment votes
-            } else {
-                nRequestedXnodeAssets = XNODE_SYNC_FINISHED;
-            }
-            nRequestedXnodeAttempt++;
-            ReleaseNodeVector(vNodesCopy);
-            return;
-        }
-
         // NORMAL NETWORK MODE - TESTNET/MAINNET
         {
             if (netfulfilledman.HasFulfilledRequest(pnode->addr, "full-sync")) {
@@ -319,17 +290,6 @@ void CXnodeSync::ProcessTick() {
                 continue;
             }
 
-            // SPORK : ALWAYS ASK FOR SPORKS AS WE SYNC (we skip this mode now)
-
-//            if (!netfulfilledman.HasFulfilledRequest(pnode->addr, "spork-sync"))
-//            {
-//                // only request once from each peer
-//                netfulfilledman.AddFulfilledRequest(pnode->addr, "spork-sync");
-//                // get current network sporks
-//                pnode->PushMessage(NetMsgType::GETSPORKS);
-//                //LogPrintf("CXnodeSync::ProcessTick -- nTick %d nRequestedXnodeAssets %d -- requesting sporks from peer %d\n", nTick, nRequestedXnodeAssets, pnode->id);
-//                continue; // always get sporks first, switch to the next node without waiting for the next tick
-//            }
 
             // MNLIST : SYNC XNODE LIST FROM OTHER CONNECTED CLIENTS
 

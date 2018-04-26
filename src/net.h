@@ -70,7 +70,7 @@ static const uint64_t DEFAULT_MAX_UPLOAD_TARGET = 0;
 /** Default for blocks only*/
 static const bool DEFAULT_BLOCKSONLY = false;
 
-static const bool DEFAULT_FORCEDNSSEED = true;
+static const bool DEFAULT_FORCEDNSSEED = false;
 static const size_t DEFAULT_MAXRECEIVEBUFFER = 5 * 1000;
 static const size_t DEFAULT_MAXSENDBUFFER    = 1 * 1000;
 
@@ -371,7 +371,7 @@ public:
     CSemaphoreGrant grantOutbound;
     CCriticalSection cs_filter;
     CBloomFilter* pfilter;
-    int nRefCount;
+    std::atomic<int> nRefCount;
     NodeId id;
     // xnode from dash
     bool fXnode;
@@ -469,8 +469,6 @@ private:
     static uint64_t nMaxOutboundLimit;
     static uint64_t nMaxOutboundTimeframe;
 
-    CCriticalSection cs_nRefCount;
-	
     CNode(const CNode&);
     void operator=(const CNode&);
 
@@ -484,9 +482,9 @@ public:
 
     int GetRefCount()
     {
-		LOCK(cs_nRefCount);
-        assert(nRefCount >= 0);
-        return nRefCount;
+        int rc = nRefCount;
+        assert(rc >= 0);
+        return rc;
     }
 
     // requires LOCK(cs_vRecvMsg)
@@ -511,15 +509,13 @@ public:
 
     CNode* AddRef()
     {
-		LOCK(cs_nRefCount);
-        nRefCount++;
+        ++nRefCount;
         return this;
     }
 
     void Release()
     {
-		LOCK(cs_nRefCount);
-        nRefCount--;
+        --nRefCount;
     }
 
 

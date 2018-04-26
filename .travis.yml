@@ -11,12 +11,12 @@ cache:
 env:
   global:
     - SDK_URL=https://bitcoincore.org/depends-sources/sdks
-    - CCACHE_SIZE=100M
+    - CCACHE_SIZE=200M
     - CCACHE_TEMPDIR=/tmp/.ccache-temp
     - CCACHE_COMPRESS=1
     - MAKEJOBS="-j2"
     - BASE_OUTDIR=$TRAVIS_BUILD_DIR/out
-    - BASE_PACKAGES="zip git build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils curl libboost-all-dev libdb4.8-dev libdb4.8++-dev libminiupnpc-dev libzmq3-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libqrencode-dev"
+    - BASE_PACKAGES="zlib1g-dev zip git build-essential libtool autotools-dev automake pkg-config libssl-dev bsdmainutils curl libboost-all-dev libdb4.8-dev libdb4.8++-dev libminiupnpc-dev libzmq3-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libqrencode-dev"
   matrix:
 # ARM32
     - HOST=arm-linux-gnueabihf PACKAGES="g++-arm-linux-gnueabihf python3-pip" HEXXCOIN_CONFIG="--enable-glibc-back-compat --enable-reduce-exports"
@@ -48,7 +48,7 @@ script:
     - OUTDIR=$BASE_OUTDIR/$TRAVIS_PULL_REQUEST/$TRAVIS_JOB_NUMBER-$HOST
     - ./autogen.sh
     - cd depends && make $MAKEJOBS
-    - cd $TRAVIS_BUILD_DIR && ./configure --prefix=$TRAVIS_BUILD_DIR/depends/$HOST --cache-file=config.cache
+    - cd $TRAVIS_BUILD_DIR && ./configure --prefix=$TRAVIS_BUILD_DIR/depends/$HOST
     - make $MAKEJOBS
 before_deploy:
     - ./pre-deploy.sh

@@ -5,12 +5,12 @@ thumbs.db
 
 *.exe
 src/hexxcoin
-src/zcoind
+src/hexxcoind
 src/hexxcoin-cli
 src/hexxcoin-tx
-src/test/test_zcoin
-src/test/test_zcoin_fuzzy
-src/qt/test/test_zcoin-qt
+src/test/test_hexxcoin
+src/test/test_hexxcoin_fuzzy
+src/qt/test/test_hexxcoin-qt
 
 # autoreconf
 Makefile.in
@@ -58,7 +58,6 @@ src/qt/test/moc*.cpp
 *.pyc
 *.o
 *.o-*
-*.patch
 *.a
 *.pb.cc
 *.pb.h
@@ -94,7 +93,7 @@ build
 *.gcno
 *.gcda
 /*.info
-test_zcoin.coverage/
+test_hexxcoin.coverage/
 total.coverage/
 coverage_percent.txt
 
@@ -109,5 +108,5 @@ test/cache/*
 
 /doc/doxygen/
 
-libzcoinconsensus.pc
+libhexxcoinconsensus.pc
 contrib/devtools/split-debug.sh

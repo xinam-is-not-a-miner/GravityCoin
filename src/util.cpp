@@ -576,7 +576,27 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
 {
     boost::filesystem::ifstream streamConfig(GetConfigFile());
     if (!streamConfig.good())
-        return; // No bitcoin.conf file is OK
+     {
+            FILE* configFile = fopen(GetConfigFile().string().c_str(), "a");
+            if (configFile != NULL)
+            {
+                std::string strHeader =
+                        "#listen=1\n"
+                        "#server=1\n"
+                        "#rpcpassword=\n"
+                        "#rpcusername=\n"
+                        "#maxconnections=\n"
+                        "#connect=\n"
+                        "#addnode=\n"
+                        "#xnode=1\n"
+                        "#xnodeprivkey=123123123123123123123123 ## Replace with your xnode private key\n"
+                        "#externalip=123.123.123.123:29100 ## Replace with your node external IP\n";
+
+                fwrite(strHeader.c_str(), std::strlen(strHeader.c_str()), 1, configFile);
+                fclose(configFile);
+            }
+            return;
+        }
 
     set<string> setOptions;
     setOptions.insert("*");
@@ -864,4 +884,37 @@ std::string CopyrightHolders(const std::string& strPrefix)
         strCopyrightHolders += "\n" + strPrefix + "The Bitcoin Core developers";
     }
     return strCopyrightHolders;
+}
+
+std::pair<bool,std::string> ReadBinaryFileTor(const std::string &filename, size_t maxsize)
+{
+    FILE *f = fopen(filename.c_str(), "rb");
+    if (f == NULL)
+        return std::make_pair(false,"");
+    std::string retval;
+    char buffer[128];
+    size_t n;
+    while ((n=fread(buffer, 1, sizeof(buffer), f)) > 0) {
+        retval.append(buffer, buffer+n);
+        if (retval.size() > maxsize)
+            break;
+    }
+    fclose(f);
+    return std::make_pair(true,retval);
+}
+
+/** Write contents of std::string to a file.
+ * @return true on success.
+ */
+bool WriteBinaryFileTor(const std::string &filename, const std::string &data)
+{
+    FILE *f = fopen(filename.c_str(), "wb");
+    if (f == NULL)
+        return false;
+    if (fwrite(data.data(), 1, data.size(), f) != data.size()) {
+        fclose(f);
+        return false;
+    }
+    fclose(f);
+    return true;
 }

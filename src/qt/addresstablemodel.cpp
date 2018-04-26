@@ -104,9 +104,12 @@ public:
             {
                 if(item.randomness != 0 && item.serialNumber != 0){
                     const std::string& pubCoin = item.value.GetHex();
-                    const std::string& isUsed = item.IsUsed ? "Used" : "New";
+                    // const std::string& isUsed = item.IsUsed ? "Used" : "New";
+                    const std::string& isUsedDenomStr = item.IsUsed
+                            ? "Used (" + std::to_string(item.denomination) + " mint)"
+                            : "New (" + std::to_string(item.denomination) + " mint)";
                     cachedAddressTable.append(AddressTableEntry(AddressTableEntry::Zerocoin,
-                                                                QString::fromStdString(isUsed),
+                                                                QString::fromStdString(isUsedDenomStr),
                                                                 QString::fromStdString(pubCoin)));
                 }
 

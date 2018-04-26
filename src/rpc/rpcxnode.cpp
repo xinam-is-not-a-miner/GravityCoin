@@ -112,7 +112,7 @@ UniValue xnode(const UniValue &params, bool fHelp) {
                         "  debug        - Print xnode status\n"
                         "  genkey       - Generate new xnodeprivkey\n"
                         "  outputs      - Print xnode compatible outputs\n"
-                        "  start        - Start local Hot xnode configured in dash.conf\n"
+                        "  start        - Start local Hot xnode configured in hexxcoin.conf\n"
                         "  start-alias  - Start single remote xnode by assigned alias configured in xnode.conf\n"
                         "  start-<mode> - Start remote xnodes configured in xnode.conf (<mode>: 'all', 'missing', 'disabled')\n"
                         "  status       - Print xnode status information\n"
@@ -344,7 +344,7 @@ UniValue xnode(const UniValue &params, bool fHelp) {
     }
 
     if (strCommand == "list-conf") {
-        UniValue resultObj(UniValue::VARR);
+        UniValue resultObj(UniValue::VOBJ);
 
         BOOST_FOREACH(CXnodeConfig::CXnodeEntry mne, xnodeConfig.getEntries()) {
             CTxIn vin = CTxIn(uint256S(mne.getTxHash()), uint32_t(atoi(mne.getOutputIndex().c_str())));
@@ -359,7 +359,7 @@ UniValue xnode(const UniValue &params, bool fHelp) {
             mnObj.push_back(Pair("txHash", mne.getTxHash()));
             mnObj.push_back(Pair("outputIndex", mne.getOutputIndex()));
             mnObj.push_back(Pair("status", strStatus));
-            resultObj.push_back(mnObj);
+            resultObj.push_back(Pair("xnode", mnObj));
         }
 
         return resultObj;

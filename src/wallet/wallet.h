@@ -18,6 +18,7 @@
 #include "wallet/walletdb.h"
 #include "wallet/rpcwallet.h"
 #include "../base58.h"
+#include "zerocoin_params.h"
 
 #include <algorithm>
 #include <map>
@@ -77,12 +78,12 @@ class CWalletTx;
 /** (client) version numbers for particular wallet features */
 enum WalletFeature
 {
-    FEATURE_BASE = 10500, // the earliest version new wallets supports (only useful for getinfo's clientversion output)
+    FEATURE_BASE = 60000, // the earliest version new wallets supports (only useful for getinfo's clientversion output)
 
-    FEATURE_WALLETCRYPT = 40000, // wallet encryption
-    FEATURE_COMPRPUBKEY = 60000, // compressed public keys
+    FEATURE_WALLETCRYPT = 60000, // wallet encryption
+    FEATURE_COMPRPUBKEY = 4000301, // compressed public keys
 
-    FEATURE_HD = 130000, // Hierarchical key derivation after BIP32 (HD Wallet)
+    FEATURE_HD = 4000301, // Hierarchical key derivation after BIP32 (HD Wallet)
     FEATURE_LATEST = FEATURE_COMPRPUBKEY // HD is optional, use FEATURE_COMPRPUBKEY as latest version
 };
 
@@ -661,7 +662,7 @@ public:
     void SetNull()
     {
         nWalletVersion = FEATURE_BASE;
-        nWalletMaxVersion = FEATURE_BASE;
+        nWalletMaxVersion = FEATURE_LATEST;
         fFileBacked = false;
         nMasterKeyMaxID = 0;
         pwalletdbEncryption = NULL;
@@ -1061,6 +1062,22 @@ public:
 
 class CZerocoinEntry
 {
+private:
+    template <typename Stream>
+    auto is_eof_helper(Stream &s, bool) -> decltype(s.eof()) {
+        return s.eof();
+    }
+
+    template <typename Stream>
+    bool is_eof_helper(Stream &s, int) {
+        return false;
+    }
+
+    template<typename Stream>
+    bool is_eof(Stream &s) {
+        return is_eof_helper(s, true);
+    }
+
 public:
     //public
     Bignum value;
@@ -1068,6 +1085,7 @@ public:
     //private
     Bignum randomness;
     Bignum serialNumber;
+    vector<unsigned char> ecdsaSecretKey;
 
     bool IsUsed;
     int nHeight;
@@ -1089,6 +1107,11 @@ public:
         id = -1;
     }
 
+    bool IsCorrectV2Mint() const {
+        return value > 0 && randomness > 0 && serialNumber > 0 && serialNumber.bitSize() <= 160 &&
+                ecdsaSecretKey.size() >= 32;
+    }
+
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
@@ -1100,6 +1123,18 @@ public:
         READWRITE(denomination);
         READWRITE(nHeight);
         READWRITE(id);
+        if (ser_action.ForRead()) {
+            if (!is_eof(s)) {
+                int nStoredVersion = 0;
+                READWRITE(nStoredVersion);
+                if (nStoredVersion >= ZC_ADVANCED_WALLETDB_MINT_VERSION)
+                    READWRITE(ecdsaSecretKey);
+            }
+        }
+        else {
+            READWRITE(nVersion);
+            READWRITE(ecdsaSecretKey);
+        }
     }
 
 };

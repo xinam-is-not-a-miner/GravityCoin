@@ -94,6 +94,8 @@ public:
 };
 
 
+class CZerocoinTxInfo;
+
 class CBlock : public CBlockHeader
 {
 public:
@@ -105,15 +107,24 @@ public:
     mutable std::vector<CTxOut> voutSuperblock; // superblock payment
     mutable bool fChecked;
 
+    // memory only, zerocoin tx info
+    mutable CZerocoinTxInfo *zerocoinTxInfo;
+
     CBlock()
     {
+        zerocoinTxInfo = NULL;
         SetNull();
     }
 
     CBlock(const CBlockHeader &header)
     {
+        zerocoinTxInfo = NULL;
         SetNull();
         *((CBlockHeader*)this) = header;
+    }
+
+    ~CBlock() {
+        ZerocoinClean();
     }
 
     ADD_SERIALIZE_METHODS;
@@ -126,6 +137,7 @@ public:
 
     void SetNull()
     {
+        ZerocoinClean();
         CBlockHeader::SetNull();
         vtx.clear();
         txoutXnode = CTxOut();
@@ -146,6 +158,8 @@ public:
     }
 
     std::string ToString() const;
+
+    void ZerocoinClean() const;
 };
 
 /** Describes a place in the block chain to another node such that if the

@@ -21,6 +21,7 @@
 #include "httprpc.h"
 #include "key.h"
 #include "main.h"
+#include "zerocoin.h"
 #include "miner.h"
 #include "net.h"
 #include "policy/policy.h"
@@ -47,9 +48,8 @@
 #include <stdio.h>
 
 #ifndef WIN32
-
+#include <string.h>
 #include <signal.h>
-
 #endif
 
 #include <boost/algorithm/string/classification.hpp>
@@ -63,6 +63,14 @@
 #include <boost/interprocess/sync/file_lock.hpp>
 #include <boost/thread.hpp>
 #include <openssl/crypto.h>
+#include <sys/stat.h>
+#include <boost/optional.hpp>
+#include <boost/thread.hpp>
+#include <event2/bufferevent.h>
+#include <event2/buffer.h>
+#include <event2/util.h>
+#include <event2/event.h>
+#include <event2/thread.h>
 #include "activexnode.h"
 #include "darksend.h"
 #include "xnode-payments.h"
@@ -78,7 +86,6 @@
 #include "zmq/zmqnotificationinterface.h"
 #endif
 
-using namespace std;
 
 bool fFeeEstimatesInitialized = false;
 static const bool DEFAULT_PROXYRANDOMIZE = true;
@@ -109,6 +116,25 @@ enum BindFlags {
 };
 
 static const char *FEE_ESTIMATES_FILENAME = "fee_estimates.dat";
+
+
+namespace fs = boost::filesystem;
+
+extern const char tor_git_revision[];
+const char tor_git_revision[] = "";
+
+
+extern "C" {
+    int tor_main(int argc, char *argv[]);
+    void tor_cleanup(void);
+}
+
+
+static char *convert_str(const std::string &s) {
+    char *pc = new char[s.size()+1];
+    std::strcpy(pc, s.c_str());
+    return pc;
+}
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -146,11 +172,11 @@ void StartShutdown()
 {
     fRequestShutdown = true;
 }
+
 bool ShutdownRequested()
 {
     return fRequestShutdown;
 }
-
 
 /**
  * This is a minimally invasive approach to shutdown on LevelDB read errors from the
@@ -381,6 +407,9 @@ std::string HelpMessage(HelpMessageMode mode) {
     strUsage += HelpMessageOpt("-txindex", strprintf(
             _("Maintain a full transaction index, used by the getrawtransaction rpc call (default: %u)"),
             DEFAULT_TXINDEX));
+    strUsage += HelpMessageOpt("-addressindex", strprintf(_("Maintain a full address index, used to query for the balance, txids and unspent outputs for addresses (default: %u)"), DEFAULT_ADDRESSINDEX));
+    strUsage += HelpMessageOpt("-timestampindex", strprintf(_("Maintain a timestamp index for block hashes, used to query blocks hashes by a range of timestamps (default: %u)"), DEFAULT_TIMESTAMPINDEX));
+    strUsage += HelpMessageOpt("-spentindex", strprintf(_("Maintain a full spent index, used to query the spending txid and input index for an outpoint (default: %u)"), DEFAULT_SPENTINDEX));
 
     strUsage += HelpMessageGroup(_("Connection options:"));
     strUsage += HelpMessageOpt("-addnode=<ip>", _("Add a node to connect to and attempt to keep the connection open"));
@@ -695,7 +724,7 @@ struct CImportingNow {
 // works correctly.
 void CleanupBlockRevFiles() {
     using namespace boost::filesystem;
-    map<string, path> mapBlockFiles;
+    map <string, path> mapBlockFiles;
 
     // Glob all blk?????.dat and rev?????.dat files from the blocks directory.
     // Remove the rev files immediately and insert the blk file paths into an
@@ -843,7 +872,7 @@ void InitParameterInteraction() {
         if (SoftSetBoolArg("-listen", false))
             LogPrintf("%s: parameter interaction: -connect set -> setting -listen=0\n", __func__);
     }
-
+#include <sys/stat.h>
     if (mapArgs.count("-proxy")) {
         // to protect privacy, do not listen by default if a default proxy server is specified
         if (SoftSetBoolArg("-listen", false))
@@ -906,6 +935,102 @@ static std::string ResolveErrMsg(const char *const optname, const std::string &s
     return strprintf(_("Cannot resolve -%s address: '%s'"), optname, strBind);
 }
 
+
+
+
+void RunTor(){
+	printf("TOR thread started.\n");
+
+	boost::optional < std::string > clientTransportPlugin;
+	struct stat sb;
+	if ((stat("obfs4proxy", &sb) == 0 && sb.st_mode & S_IXUSR)
+			|| !std::system("which obfs4proxy")) {
+		clientTransportPlugin = "obfs4 exec obfs4proxy";
+	} else if (stat("obfs4proxy.exe", &sb) == 0 && sb.st_mode & S_IXUSR) {
+		clientTransportPlugin = "obfs4 exec obfs4proxy.exe";
+	}
+
+	fs::path tor_dir = GetDataDir() / "tor";
+	fs::create_directory(tor_dir);
+	fs::path log_file = tor_dir / "tor.log";
+
+	std::vector < std::string > argv;
+	argv.push_back("tor");
+	argv.push_back("--Log");
+	argv.push_back("notice file " + log_file.string());
+	argv.push_back("--SocksPort");
+	argv.push_back("9050");
+	argv.push_back("--ignore-missing-torrc");
+	argv.push_back("-f");
+	argv.push_back((tor_dir / "torrc").string());
+	argv.push_back("--HiddenServiceDir");
+	argv.push_back((tor_dir / "onion").string());
+	argv.push_back("--HiddenServicePort");
+	argv.push_back("8168");
+
+	if (clientTransportPlugin) {
+		printf("Using OBFS4.\n");
+		argv.push_back("--ClientTransportPlugin");
+		argv.push_back(*clientTransportPlugin);
+		argv.push_back("--UseBridges");
+		argv.push_back("1");
+	} else {
+		printf("No OBFS4 found, not using it.\n");
+	}
+
+	std::vector<char *> argv_c;
+	std::transform(argv.begin(), argv.end(), std::back_inserter(argv_c),
+			convert_str);
+
+	tor_main(argv_c.size(), &argv_c[0]);
+
+
+}
+
+
+struct event_base *baseTor;
+boost::thread torEnabledThread;
+
+static void TorEnabledThread()
+{
+	RunTor();
+    event_base_dispatch(baseTor);
+}
+
+
+void StartTorEnabled(boost::thread_group& threadGroup, CScheduler& scheduler)
+{
+    assert(!baseTor);
+#ifdef WIN32
+    evthread_use_windows_threads();
+#else
+    evthread_use_pthreads();
+#endif
+    baseTor = event_base_new();
+    if (!baseTor) {
+        LogPrintf("tor: Unable to create event_base\n");
+        return;
+    }
+
+    torEnabledThread = boost::thread(boost::bind(&TraceThread<void (*)()>, "torcontrol", &TorEnabledThread));
+}
+
+void InterruptTorEnabled()
+{
+    if (baseTor) {
+        LogPrintf("tor: Thread interrupt\n");
+        event_base_loopbreak(baseTor);
+    }
+}
+
+void StopTorEnabled()
+{
+    if (baseTor) {
+        torEnabledThread.join();
+        event_base_free(baseTor);
+        baseTor = 0;
+    }
+}
 
 void InitLogging() {
     fPrintToConsole = GetBoolArg("-printtoconsole", false);
@@ -1001,7 +1126,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     nMaxConnections = std::max(nUserMaxConnections, 0);
 
     // Trim requested connection counts, to fit into system limitations
-    nMaxConnections = std::max(std::min(nMaxConnections, (int)(FD_SETSIZE - nBind - MIN_CORE_FILEDESCRIPTORS)), 0);
+    nMaxConnections = std::max(std::min(nMaxConnections, (int) (FD_SETSIZE - nBind - MIN_CORE_FILEDESCRIPTORS)), 0);
     int nFD = RaiseFileDescriptorLimit(nMaxConnections + MIN_CORE_FILEDESCRIPTORS);
     if (nFD < MIN_CORE_FILEDESCRIPTORS)
         return InitError(_("Not enough file descriptors available."));
@@ -1048,7 +1173,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     fCheckBlockIndex = GetBoolArg("-checkblockindex", chainparams.DefaultConsistencyChecks());
     fCheckpointsEnabled = GetBoolArg("-checkpoints", DEFAULT_CHECKPOINTS_ENABLED);
 
-    // mempool limits
+    // mempool AC_CONFIG_SUBDIRSlimits
     int64_t nMempoolSizeMax = GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000;
     int64_t nMempoolSizeMin = GetArg("-limitdescendantsize", DEFAULT_DESCENDANT_SIZE_LIMIT) * 1000 * 40;
     if (nMempoolSizeMax < 0 || nMempoolSizeMax < nMempoolSizeMin)
@@ -1151,7 +1276,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
         }
         const vector <string> &deployments = mapMultiArgs["-bip9params"];
         for (auto i : deployments) {
-            std::vector<std::string> vDeploymentParams;
+            std::vector <std::string> vDeploymentParams;
             boost::split(vDeploymentParams, i, boost::is_any_of(":"));
             if (vDeploymentParams.size() != 3) {
                 return InitError("BIP9 parameters malformed, expecting deployment:start:end");
@@ -1164,7 +1289,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
                 return InitError(strprintf("Invalid nTimeout (%s)", vDeploymentParams[2]));
             }
             bool found = false;
-            for (int i=0; i<(int)Consensus::MAX_VERSION_BITS_DEPLOYMENTS; ++i)
+            for (int i = 0; i < (int) Consensus::MAX_VERSION_BITS_DEPLOYMENTS; ++i)
             {
                 if (vDeploymentParams[0].compare(VersionBitsDeploymentInfo[i].name) == 0)
                 {
@@ -1202,10 +1327,9 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
         static boost::interprocess::file_lock lock(pathLockFile.string().c_str());
         if (!lock.try_lock())
             return InitError(strprintf(_("Cannot obtain a lock on data directory %s. %s is probably already running."), strDataDir, _(PACKAGE_NAME)));
-    } catch(const boost::interprocess::interprocess_exception& e) {
+    } catch (const boost::interprocess::interprocess_exception &e) {
         return InitError(strprintf(_("Cannot obtain a lock on data directory %s. %s is probably already running.") + " %s.", strDataDir, _(PACKAGE_NAME), e.what()));
     }
-
 
 #ifndef WIN32
     CreatePidFile(GetPidFile(), getpid());
@@ -1256,11 +1380,11 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     } // (!fDisableWallet)
 #endif // ENABLE_WALLET
 // ********************************************************* Step 6: network initialization
-
+    LogPrintf("*** Step 6: network initialization");
     RegisterNodeSignals(GetNodeSignals());
 
     // sanitize comments per BIP-0014, format user agent and check total size
-    std::vector<string> uacomments;
+    std::vector <string> uacomments;
     BOOST_FOREACH(string cmt, mapMultiArgs["-uacomment"])
     {
         if (cmt != SanitizeString(cmt, SAFE_CHARS_UA_COMMENT))
@@ -1275,7 +1399,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
 
     if (mapArgs.count("-onlynet")) {
         std::set<enum Network> nets;
-        BOOST_FOREACH(const std::string& snet, mapMultiArgs["-onlynet"]) {
+        BOOST_FOREACH(const std::string &snet, mapMultiArgs["-onlynet"]) {
             enum Network net = ParseNetwork(snet);
             if (net == NET_UNROUTABLE)
                 return InitError(strprintf(_("Unknown network specified in -onlynet: '%s'"), snet));
@@ -1289,7 +1413,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     }
 
     if (mapArgs.count("-whitelist")) {
-        BOOST_FOREACH(const std::string& net, mapMultiArgs["-whitelist"]) {
+        BOOST_FOREACH(const std::string &net, mapMultiArgs["-whitelist"]) {
             CSubNet subnet(net);
             if (!subnet.IsValid())
                 return InitError(strprintf(_("Invalid netmask specified in -whitelist: '%s'"), net));
@@ -1297,12 +1421,30 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
         }
     }
 
+    // start tor
+    boost::filesystem::path pathTorSetting = GetDataDir()/"torsetting.dat";
+    std::pair<bool,std::string> torEnabledArg = ReadBinaryFileTor(pathTorSetting.string().c_str());
+    if(torEnabledArg.second != "" && torEnabledArg.second != "0"){
+    	StartTorEnabled(threadGroup, scheduler);
+        SetLimited(NET_TOR);
+        SetLimited(NET_IPV4);
+        SetLimited(NET_IPV6);
+        proxyType addrProxy = proxyType(CService("127.0.0.1", 9050),
+                        true);
+        SetProxy(NET_IPV4, addrProxy);
+        SetProxy(NET_IPV6, addrProxy);
+        SetProxy(NET_TOR, addrProxy);
+        SetLimited(NET_IPV4, false);
+        SetLimited(NET_IPV6, false);
+        SetLimited(NET_TOR, false);
+    }
+
     bool proxyRandomize = GetBoolArg("-proxyrandomize", DEFAULT_PROXYRANDOMIZE);
     // -proxy sets a proxy for all outgoing network traffic
     // -noproxy (or -proxy=0) as well as the empty string can be used to not set a proxy, this is the default
     std::string proxyArg = GetArg("-proxy", "");
     SetLimited(NET_TOR);
-    if (proxyArg != "" && proxyArg != "0") {
+    if (proxyArg != "" && proxyArg != "0"){
         proxyType addrProxy = proxyType(CService(proxyArg, 9050), proxyRandomize);
         if (!addrProxy.IsValid())
             return InitError(strprintf(_("Invalid -proxy address: '%s'"), proxyArg));
@@ -1339,13 +1481,13 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     bool fBound = false;
     if (fListen) {
         if (mapArgs.count("-bind") || mapArgs.count("-whitebind")) {
-            BOOST_FOREACH(const std::string& strBind, mapMultiArgs["-bind"]) {
+            BOOST_FOREACH(const std::string &strBind, mapMultiArgs["-bind"]) {
                 CService addrBind;
                 if (!Lookup(strBind.c_str(), addrBind, GetListenPort(), false))
                     return InitError(ResolveErrMsg("bind", strBind));
                 fBound |= Bind(addrBind, (BF_EXPLICIT | BF_REPORT_ERROR));
             }
-            BOOST_FOREACH(const std::string& strBind, mapMultiArgs["-whitebind"]) {
+            BOOST_FOREACH(const std::string &strBind, mapMultiArgs["-whitebind"]) {
                 CService addrBind;
                 if (!Lookup(strBind.c_str(), addrBind, 0, false))
                     return InitError(ResolveErrMsg("whitebind", strBind));
@@ -1353,8 +1495,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
                     return InitError(strprintf(_("Need to specify a port with -whitebind: '%s'"), strBind));
                 fBound |= Bind(addrBind, (BF_EXPLICIT | BF_REPORT_ERROR | BF_WHITELIST));
             }
-        }
-        else {
+        } else {
             struct in_addr inaddr_any;
             inaddr_any.s_addr = INADDR_ANY;
             fBound |= Bind(CService(in6addr_any, GetListenPort()), BF_NONE);
@@ -1374,8 +1515,8 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
         }
     }
 
-    BOOST_FOREACH(const std::string& strDest, mapMultiArgs["-seednode"])
-        AddOneShot(strDest);
+    BOOST_FOREACH(const std::string &strDest, mapMultiArgs["-seednode"])
+    AddOneShot(strDest);
 
 #if ENABLE_ZMQ
     pzmqNotificationInterface = CZMQNotificationInterface::CreateWithArguments(mapArgs);
@@ -1389,7 +1530,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     }
 
     // ********************************************************* Step 7: load block chain
-
+    LogPrintf("Step 7: load block chain ************************************\n");
     fReindex = GetBoolArg("-reindex", false);
     bool fReindexChainState = GetBoolArg("-reindex-chainstate", false);
 
@@ -1422,15 +1563,21 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
 
     // cache size calculations
     int64_t nTotalCache = (GetArg("-dbcache", nDefaultDbCache) << 20);
-    nTotalCache = std::max(nTotalCache, nMinDbCache << 20); // total cache cannot be less than nMinDbCache
-    nTotalCache = std::min(nTotalCache, nMaxDbCache << 20); // total cache cannot be greater than nMaxDbcache
+//    nTotalCache = std::max(nTotalCache, nMinDbCache << 20); // total cache cannot be less than nMinDbCache
+//    nTotalCache = std::min(nTotalCache, nMaxDbCache << 20); // total cache cannot be greater than nMaxDbcache
+    if (nTotalCache < (1 << 22))
+        nTotalCache = (1 << 22);
     int64_t nBlockTreeDBCache = nTotalCache / 8;
-    nBlockTreeDBCache = std::min(nBlockTreeDBCache, (GetBoolArg("-txindex", DEFAULT_TXINDEX) ? nMaxBlockDBAndTxIndexCache : nMaxBlockDBCache) << 20);
+//    nBlockTreeDBCache = std::min(nBlockTreeDBCache, (GetBoolArg("-txindex", DEFAULT_TXINDEX) ? nMaxBlockDBAndTxIndexCache : nMaxBlockDBCache) << 20);
+    if (nBlockTreeDBCache > (1 << 21) && !GetBoolArg("-txindex", false))
+        nBlockTreeDBCache = (1 << 21); // block tree db cache shouldn't be larger than 2 MiB
     nTotalCache -= nBlockTreeDBCache;
-    int64_t nCoinDBCache = std::min(nTotalCache / 2, (nTotalCache / 4) + (1 << 23)); // use 25%-50% of the remainder for disk cache
+    int64_t nCoinDBCache = std::min(nTotalCache / 2,
+                                    (nTotalCache / 4) + (1 << 23)); // use 25%-50% of the remainder for disk cache
     nCoinDBCache = std::min(nCoinDBCache, nMaxCoinsDBCache << 20); // cap total coins db cache
     nTotalCache -= nCoinDBCache;
-    nCoinCacheUsage = nTotalCache; // the rest goes to in-memory cache
+//    nCoinCacheUsage = nTotalCache; // the rest goes to in-memory cache
+    nCoinCacheUsage = nTotalCache / 300;
     LogPrintf("Cache configuration:\n");
     LogPrintf("* Using %.1fMiB for block index database\n", nBlockTreeDBCache * (1.0 / 1024 / 1024));
     LogPrintf("* Using %.1fMiB for chain state database\n", nCoinDBCache * (1.0 / 1024 / 1024));
@@ -1440,12 +1587,13 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     while (!fLoaded) {
         bool fReset = fReindex;
         std::string strLoadError;
-
+        LogPrintf("Loading block index...\n");
         uiInterface.InitMessage(_("Loading block index..."));
 
         nStart = GetTimeMillis();
         do {
             try {
+                LogPrintf("UnloadBlockIndex() \n");
                 UnloadBlockIndex();
                 delete pcoinsTip;
                 delete pcoinsdbview;
@@ -1453,17 +1601,28 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
                 delete pblocktree;
 
                 pblocktree = new CBlockTreeDB(nBlockTreeDBCache, false, fReindex);
+	            
+	            if (!fReindex) {
+                    // Check existing block index database version, reindex if needed
+                    if (pblocktree->GetBlockIndexVersion() < ZC_ADVANCED_INDEX_VERSION) {
+                        LogPrintf("Upgrade to new version of block index required, reindex forced\n");
+                        delete pblocktree;
+			            fReindex = fReset = true;
+                        pblocktree = new CBlockTreeDB(nBlockTreeDBCache, false, fReindex);
+		            }
+	            }
+	            
                 pcoinsdbview = new CCoinsViewDB(nCoinDBCache, false, fReindex || fReindexChainState);
                 pcoinscatcher = new CCoinsViewErrorCatcher(pcoinsdbview);
                 pcoinsTip = new CCoinsViewCache(pcoinscatcher);
-
+                LogPrintf("fReindex = %s\n", fReindex);
                 if (fReindex) {
                     pblocktree->WriteReindexing(true);
                     //If we're reindexing in prune mode, wipe away unusable block files and all undo data files
                     if (fPruneMode)
                         CleanupBlockRevFiles();
                 }
-
+                LogPrintf("LoadBlockIndex...\n");
                 if (!LoadBlockIndex()) {
                     strLoadError = _("Error loading block database");
                     break;
@@ -1496,7 +1655,8 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
                 if (!fReindex && chainActive.Tip() != NULL) {
                     uiInterface.InitMessage(_("Rewinding blocks..."));
                     if (!RewindBlockIndex(chainparams)) {
-                        strLoadError = _("Unable to rewind the database to a pre-fork state. You will need to redownload the blockchain");
+                        strLoadError = _(
+                                "Unable to rewind the database to a pre-fork state. You will need to redownload the blockchain");
                         break;
                     }
                 }
@@ -1504,7 +1664,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
                 uiInterface.InitMessage(_("Verifying blocks..."));
                 if (fHavePruned && GetArg("-checkblocks", DEFAULT_CHECKBLOCKS) > MIN_BLOCKS_TO_KEEP) {
                     LogPrintf("Prune: pruned datadir may not have more than %d blocks; only checking available blocks",
-                        MIN_BLOCKS_TO_KEEP);
+                              MIN_BLOCKS_TO_KEEP);
                 }
 
                 {
@@ -1512,14 +1672,14 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
                     CBlockIndex *tip = chainActive.Tip();
                     if (tip && tip->nTime > GetAdjustedTime() + 2 * 60 * 60) {
                         strLoadError = _("The block database contains a block which appears to be from the future. "
-                                "This may be due to your computer's date and time being set incorrectly. "
-                                "Only rebuild the block database if you are sure that your computer's date and time are correct");
+                                                 "This may be due to your computer's date and time being set incorrectly. "
+                                                 "Only rebuild the block database if you are sure that your computer's date and time are correct");
                         break;
                     }
                 }
-
+                LogPrintf("CVerifyDB().VerifyDB...\n");
                 if (!CVerifyDB().VerifyDB(chainparams, pcoinsdbview, GetArg("-checklevel", DEFAULT_CHECKLEVEL),
-                              GetArg("-checkblocks", DEFAULT_CHECKBLOCKS))) {
+                                          GetArg("-checkblocks", DEFAULT_CHECKBLOCKS))) {
                     strLoadError = _("Corrupted block database detected");
                     break;
                 }
@@ -1536,9 +1696,9 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
             // first suggest a reindex
             if (!fReset) {
                 bool fRet = uiInterface.ThreadSafeQuestion(
-                    strLoadError + ".\n\n" + _("Do you want to rebuild the block database now?"),
-                    strLoadError + ".\nPlease restart with -reindex or -reindex-chainstate to recover.",
-                    "", CClientUIInterface::MSG_ERROR | CClientUIInterface::BTN_ABORT);
+                        strLoadError + ".\n\n" + _("Do you want to rebuild the block database now?"),
+                        strLoadError + ".\nPlease restart with -reindex or -reindex-chainstate to recover.",
+                        "", CClientUIInterface::MSG_ERROR | CClientUIInterface::BTN_ABORT);
                 if (fRet) {
                     fReindex = true;
                     fRequestShutdown = false;
@@ -1555,8 +1715,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     // As LoadBlockIndex can take several minutes, it's possible the user
     // requested to kill the GUI during the last operation. If so, exit.
     // As the program has not fully started yet, Shutdown() is possibly overkill.
-    if (fRequestShutdown)
-    {
+    if (fRequestShutdown) {
         LogPrintf("Shutdown requested. Exiting.\n");
         return false;
     }
@@ -1570,7 +1729,9 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     fFeeEstimatesInitialized = true;
 
 // ********************************************************* Step 8: load wallet
+
 #ifdef ENABLE_WALLET
+    LogPrintf("Step 8: load wallet ************************************\n");
     if (fDisableWallet) {
         pwalletMain = NULL;
         LogPrintf("Wallet disabled!\n");
@@ -1584,6 +1745,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
 #endif // !ENABLE_WALLET
 
     // ********************************************************* Step 9: data directory maintenance
+    LogPrintf("Step 9: data directory maintenance **********************\n");
     // if pruning, unset the service bit and perform the initial blockstore prune
     // after any wallet rescanning has taken place.
     if (fPruneMode) {
@@ -1625,7 +1787,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
 
     std::vector <boost::filesystem::path> vImportFiles;
     if (mapArgs.count("-loadblock")) {
-        BOOST_FOREACH(const std::string& strFile, mapMultiArgs["-loadblock"])
+        BOOST_FOREACH(const std::string &strFile, mapMultiArgs["-loadblock"])
         vImportFiles.push_back(strFile);
     }
 
@@ -1716,21 +1878,22 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
         }
     }
 
-
     nLiquidityProvider = GetArg("-liquidityprovider", nLiquidityProvider);
     nLiquidityProvider = std::min(std::max(nLiquidityProvider, 0), 100);
     darkSendPool.SetMinBlockSpacing(nLiquidityProvider * 15);
 
-    fEnablePrivateSend = GetBoolArg("-enableprivatesend", 0);
-    fPrivateSendMultiSession = GetBoolArg("-privatesendmultisession", DEFAULT_PRIVATESEND_MULTISESSION);
-    nPrivateSendRounds = GetArg("-privatesendrounds", DEFAULT_PRIVATESEND_ROUNDS);
-    nPrivateSendRounds = std::min(std::max(nPrivateSendRounds, 2), nLiquidityProvider ? 99999 : 16);
-    nPrivateSendAmount = GetArg("-privatesendamount", DEFAULT_PRIVATESEND_AMOUNT);
-    nPrivateSendAmount = std::min(std::max(nPrivateSendAmount, 2), 999999);
+    fEnablePrivateSend = false;
+//    fEnablePrivateSend = GetBoolArg("-enableprivatesend", 0);
+//    fPrivateSendMultiSession = GetBoolArg("-privatesendmultisession", DEFAULT_PRIVATESEND_MULTISESSION);
+//    nPrivateSendRounds = GetArg("-privatesendrounds", DEFAULT_PRIVATESEND_ROUNDS);
+//    nPrivateSendRounds = std::min(std::max(nPrivateSendRounds, 2), nLiquidityProvider ? 99999 : 16);
+//    nPrivateSendAmount = GetArg("-privatesendamount", DEFAULT_PRIVATESEND_AMOUNT);
+//    nPrivateSendAmount = std::min(std::max(nPrivateSendAmount, 2), 999999);
 
-    fEnableInstantSend = GetBoolArg("-enableinstantsend", 1);
-    nInstantSendDepth = GetArg("-instantsenddepth", DEFAULT_INSTANTSEND_DEPTH);
-    nInstantSendDepth = std::min(std::max(nInstantSendDepth, 0), 60);
+    fEnableInstantSend = false;
+//    fEnableInstantSend = GetBoolArg("-enableinstantsend", 1);
+//    nInstantSendDepth = GetArg("-instantsenddepth", DEFAULT_INSTANTSEND_DEPTH);
+//    nInstantSendDepth = std::min(std::max(nInstantSendDepth, 0), 60);
 
     //lite mode disables all Xnode and Darksend related functionality
     fLiteMode = GetBoolArg("-litemode", false);
@@ -1739,9 +1902,9 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     }
 
     LogPrintf("fLiteMode %d\n", fLiteMode);
-    LogPrintf("nInstantSendDepth %d\n", nInstantSendDepth);
-    LogPrintf("PrivateSend rounds %d\n", nPrivateSendRounds);
-    LogPrintf("PrivateSend amount %d\n", nPrivateSendAmount);
+//    LogPrintf("nInstantSendDepth %d\n", nInstantSendDepth);
+//    LogPrintf("PrivateSend rounds %d\n", nPrivateSendRounds);
+//    LogPrintf("PrivateSend amount %d\n", nPrivateSendAmount);
 
     darkSendPool.InitDenominations();
 
@@ -1775,12 +1938,12 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
 
     // force UpdatedBlockTip to initialize pCurrentBlockIndex for DS, MN payments and budgets
     // but don't call it directly to prevent triggering of other listeners like zmq etc.
-//    GetMainSignals().UpdatedBlockTip(chainActive.Tip());
+    // GetMainSignals().UpdatedBlockTip(chainActive.Tip());
     mnodeman.UpdatedBlockTip(chainActive.Tip());
     darkSendPool.UpdatedBlockTip(chainActive.Tip());
     mnpayments.UpdatedBlockTip(chainActive.Tip());
     xnodeSync.UpdatedBlockTip(chainActive.Tip());
-//    governance.UpdatedBlockTip(chainActive.Tip());
+    // governance.UpdatedBlockTip(chainActive.Tip());
 
     // ********************************************************* Step 11d: start dash-privatesend thread
 
@@ -1795,6 +1958,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
 
 #ifdef ENABLE_WALLET
     if (pwalletMain) {
+        LogPrintf("Step 12: ReacceptWalletTransactions\n");
         // Add wallet transactions that aren't already in a block to mapTransactions
         pwalletMain->ReacceptWalletTransactions();
 

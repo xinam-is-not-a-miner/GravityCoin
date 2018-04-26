@@ -1,7 +1,7 @@
 Xnode Instructions and Notes
 =============================
- - Version 0.1.7
- - Date: 6 March 2018
+ - Version 0.1.8
+ - Date: 26 April 2018
 
 Prerequisites
 -------------
@@ -21,11 +21,11 @@ Either
 	mkdir .hexxcoin
 	cd .hexxcoin
 	sudo apt-get install unzip
-	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/22.4.2018/chainfiles.zip
+	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/blocks/chainfiles.zip
 	unzip chainfiles.zip
 	cd ..
-	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/4.0.3.0/linux-x64.zip
-	unzip linux-x64.zip
+	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/4.0.3.3/linux-x64.tar.gz
+	tar xvfz linux-x64.tar.gz
 	
 	./hexxcoind -daemon
 	./hexxcoin-cli getinfo
@@ -141,11 +141,7 @@ Step 3. ON VPS: Update config files
 ----------------------
 **3.1.**  Create file **hexxcoin.conf** (in folder **~/.hexxcoin**)
 
-    rpcuser=username
-    rpcpassword=password
-    rpcallowip=127.0.0.1
     server=1
-    maxconnections=24
     xnode=1
     xnodeprivkey=XXXXXXXXXXXXXXXXX  ## Replace with your xnode private key
     externalip=XXX.XXX.XXX.XXX ## Replace with your node external IP
