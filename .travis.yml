@@ -11,25 +11,25 @@ cache:
 env:
   global:
     - SDK_URL=https://bitcoincore.org/depends-sources/sdks
-    - CCACHE_SIZE=200M
+    - CCACHE_SIZE=1G
     - CCACHE_TEMPDIR=/tmp/.ccache-temp
     - CCACHE_COMPRESS=1
     - MAKEJOBS="-j2"
     - BASE_OUTDIR=$TRAVIS_BUILD_DIR/out
-    - BASE_PACKAGES="zlib1g-dev zip git build-essential libtool autotools-dev automake pkg-config libssl-dev bsdmainutils curl libboost-all-dev libdb4.8-dev libdb4.8++-dev libminiupnpc-dev libzmq3-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libqrencode-dev"
+    - BASE_PACKAGES="zlib1g-dev zip git build-essential libtool autotools-dev automake pkg-config bsdmainutils curl"
   matrix:
 # ARM32
-    - HOST=arm-linux-gnueabihf PACKAGES="g++-arm-linux-gnueabihf python3-pip" HEXXCOIN_CONFIG="--enable-glibc-back-compat --enable-reduce-exports"
+    - HOST=arm-linux-gnueabihf PACKAGES="g++-arm-linux-gnueabihf" OPT="NO_QT=1" CONF="--without-gui"
 # ARM64
-    - HOST=aarch64-linux-gnu PACKAGES="g++-aarch64-linux-gnu python3-pip" HEXXCOIN_CONFIG="--enable-glibc-back-compat --enable-reduce-exports"
+    - HOST=aarch64-linux-gnu PACKAGES="g++-aarch64-linux-gnu" OPT="NO_QT=1" CONF="--without-gui"
 # Win32
-    - HOST=i686-w64-mingw32 PACKAGES="python3 nsis g++-mingw-w64-i686 mingw-w64-i686-dev" HEXXCOIN_CONFIG="--enable-reduce-exports"
+    - HOST=i686-w64-mingw32 PACKAGES="g++-mingw-w64-i686 mingw-w64-i686-dev"
 # Win64
-    - HOST=x86_64-w64-mingw32 PACKAGES="python3 nsis g++-mingw-w64-x86-64 mingw-w64-x86-64-dev" HEXXCOIN_CONFIG="--enable-reduce-exports"
+    - HOST=x86_64-w64-mingw32 PACKAGES="g++-mingw-w64-x86-64 mingw-w64-x86-64-dev"
 # x86_64 Linux
-    - HOST=x86_64-unknown-linux-gnu PACKAGES="python3-zmq" HEXXCOIN_CONFIG="--enable-zmq --with-gui=qt5 --enable-glibc-back-compat --enable-reduce-exports"
+    - HOST=x86_64-unknown-linux-gnu PACKAGES=""
 # Cross-Mac
-    - HOST=x86_64-apple-darwin11 PACKAGES="cmake imagemagick libcap-dev librsvg2-bin libz-dev libbz2-dev libtiff-tools python-dev" HEXXCOIN_CONFIG="--enable-gui --enable-reduce-exports --enable-werror" OSX_SDK=10.11
+    - HOST=x86_64-apple-darwin11 PACKAGES="cmake imagemagick libcap-dev librsvg2-bin libz-dev libbz2-dev libtiff-tools python-dev" OSX_SDK=10.11
 
 before_install:
     - export PATH=$(echo $PATH | tr ':' "\n" | sed '/\/opt\/python/d' | tr "\n" ":" | sed "s|::|:|g")
@@ -47,8 +47,8 @@ before_script:
 script:
     - OUTDIR=$BASE_OUTDIR/$TRAVIS_PULL_REQUEST/$TRAVIS_JOB_NUMBER-$HOST
     - ./autogen.sh
-    - cd depends && make $MAKEJOBS
-    - cd $TRAVIS_BUILD_DIR && ./configure --prefix=$TRAVIS_BUILD_DIR/depends/$HOST
+    - cd depends && make $MAKEJOBS $OPT
+    - cd $TRAVIS_BUILD_DIR && ./configure --prefix=$TRAVIS_BUILD_DIR/depends/$HOST $CONF
     - make $MAKEJOBS
 before_deploy:
     - ./pre-deploy.sh
