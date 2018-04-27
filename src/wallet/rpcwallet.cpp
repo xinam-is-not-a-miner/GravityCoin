@@ -2647,7 +2647,7 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
 {
 
     if (fHelp || params.size() > 1)
-        throw runtime_error("mintzerocoin <amount>(1,10,25,50,100)\n" + HelpRequiringPassphrase());
+        throw runtime_error("mintzerocoin <amount>(1,10,100,250,500)\n" + HelpRequiringPassphrase());
 
     int64_t nAmount = 0;
     libzerocoin::CoinDenomination denomination;
@@ -2658,17 +2658,17 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
     } else if (params[0].get_real() == 10.0) {
         denomination = libzerocoin::ZQ_GOLDWASSER;
         nAmount = AmountFromValue(params[0]);
-    } else if (params[0].get_real() == 25.0) {
+    } else if (params[0].get_real() == 100.0) {
         denomination = libzerocoin::ZQ_RACKOFF;
         nAmount = AmountFromValue(params[0]);
-    } else if (params[0].get_real() == 50.0) {
+    } else if (params[0].get_real() == 250.0) {
         denomination = libzerocoin::ZQ_PEDERSEN;
         nAmount = AmountFromValue(params[0]);
-    } else if (params[0].get_real() == 100.0) {
+    } else if (params[0].get_real() == 500.0) {
         denomination = libzerocoin::ZQ_WILLIAMSON;
         nAmount = AmountFromValue(params[0]);
     } else {
-        throw runtime_error("mintzerocoin <amount>(1,10,25,50,100)\n");
+        throw runtime_error("mintzerocoin <amount>(1,10,100,250,500)\n");
     }
     LogPrintf("rpcWallet.mintzerocoin() denomination = %s, nAmount = %s \n", denomination, nAmount);
 
@@ -2732,7 +2732,7 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp) {
 
     if (fHelp || params.size() > 1)
         throw runtime_error(
-                "spendzerocoin <amount>(1,10,25,50,100)\n"
+                "spendzerocoin <amount>(1,10,100,250,500)\n"
                 + HelpRequiringPassphrase());
 
 
@@ -2745,18 +2745,18 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp) {
     } else if (params[0].get_real() == 10.0) {
         denomination = libzerocoin::ZQ_GOLDWASSER;
         nAmount = AmountFromValue(params[0]);
-    } else if (params[0].get_real() == 25.0) {
+    } else if (params[0].get_real() == 100.0) {
         denomination = libzerocoin::ZQ_RACKOFF;
         nAmount = AmountFromValue(params[0]);
-    } else if (params[0].get_real() == 50.0) {
+    } else if (params[0].get_real() == 250.0) {
         denomination = libzerocoin::ZQ_PEDERSEN;
         nAmount = AmountFromValue(params[0]);
-    } else if (params[0].get_real() == 100.0) {
+    } else if (params[0].get_real() == 500.0) {
         denomination = libzerocoin::ZQ_WILLIAMSON;
         nAmount = AmountFromValue(params[0]);
     } else {
         throw runtime_error(
-                "spendzerocoin <amount>(1,10,25,50,100)\n");
+                "spendzerocoin <amount>(1,10,100,250,500)\n");
     }
 
 
@@ -2847,9 +2847,9 @@ UniValue listmintzerocoins(const UniValue& params, bool fHelp) {
 UniValue listpubcoins(const UniValue& params, bool fHelp) {
     if (fHelp || params.size() > 1)
         throw runtime_error(
-                "listpubcoin <all>(1/10/25/50/100)\n"
+                "listpubcoin <all>(1/10/100/250/500)\n"
                         "\nArguments:\n"
-                        "1. <all> (int, optional) 1,10,25,50,100 (default) to return all pubcoin with denomination. empty to return all pubcoin.\n"
+                        "1. <all> (int, optional) 1,10,100,250,500 (default) to return all pubcoin with denomination. empty to return all pubcoin.\n"
                         "\nResults are an array of Objects, each of which has:\n"
                         "{id, IsUsed, denomination, value, serialNumber, nHeight, randomness}");
 
