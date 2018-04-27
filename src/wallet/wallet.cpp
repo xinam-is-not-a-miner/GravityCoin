@@ -3239,15 +3239,15 @@ bool CWallet::CreateZerocoinSpendModel(string &stringError, string denomAmount) 
     } else if (denomAmount == "10") {
         denomination = libzerocoin::ZQ_GOLDWASSER;
         nAmount = roundint64(10 * COIN);
-    } else if (denomAmount == "25") {
-        denomination = libzerocoin::ZQ_RACKOFF;
-        nAmount = roundint64(25 * COIN);
-    } else if (denomAmount == "50") {
-        denomination = libzerocoin::ZQ_PEDERSEN;
-        nAmount = roundint64(50 * COIN);
     } else if (denomAmount == "100") {
-        denomination = libzerocoin::ZQ_WILLIAMSON;
+        denomination = libzerocoin::ZQ_RACKOFF;
         nAmount = roundint64(100 * COIN);
+    } else if (denomAmount == "250") {
+        denomination = libzerocoin::ZQ_PEDERSEN;
+        nAmount = roundint64(250 * COIN);
+    } else if (denomAmount == "500") {
+        denomination = libzerocoin::ZQ_WILLIAMSON;
+        nAmount = roundint64(500 * COIN);
     } else {
         return false;
     }
