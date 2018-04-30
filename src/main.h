@@ -56,7 +56,7 @@ static const unsigned int DEFAULT_MIN_RELAY_TX_FEE = 0.1 * CENT; //10000
 //! -maxtxfee default
 static const CAmount DEFAULT_TRANSACTION_MAXFEE = 1 * COIN;
 //! Discourage users to set fees higher than this amount (in satoshis) per kB
-static const CAmount HIGH_TX_FEE_PER_KB = 0.1 * CENT;
+static const CAmount HIGH_TX_FEE_PER_KB = CENT;
 //! -maxtxfee will warn if called with a higher fee than this amount (in satoshis)
 static const CAmount HIGH_MAX_TX_FEE = COIN;
 /** Default for -maxorphantx, maximum number of orphan transactions kept in memory */
