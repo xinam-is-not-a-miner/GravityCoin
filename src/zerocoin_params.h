@@ -22,8 +22,8 @@ static const int64_t DUST_HARD_LIMIT = 1000;   // 0.00001 HXX mininput
 
 #define ZC_V1_5_STARTING_BLOCK          102726
 
-#define ZC_V1_5_GRACEFUL_MEMPOOL_PERIOD	300000
-#define ZC_V1_5_GRACEFUL_PERIOD			300000  //test values
+#define ZC_V1_5_GRACEFUL_MEMPOOL_PERIOD	0
+#define ZC_V1_5_GRACEFUL_PERIOD			0
 
 // Number of coins per id in spend v1/v1.5
 #define ZC_SPEND_V1_COINSPERID			10
