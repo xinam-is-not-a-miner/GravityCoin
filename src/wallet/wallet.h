@@ -81,9 +81,9 @@ enum WalletFeature
     FEATURE_BASE = 60000, // the earliest version new wallets supports (only useful for getinfo's clientversion output)
 
     FEATURE_WALLETCRYPT = 60000, // wallet encryption
-    FEATURE_COMPRPUBKEY = 4000301, // compressed public keys
+    FEATURE_COMPRPUBKEY = 4000304, // compressed public keys
 
-    FEATURE_HD = 4000301, // Hierarchical key derivation after BIP32 (HD Wallet)
+    FEATURE_HD = 130000, // Hierarchical key derivation after BIP32 (HD Wallet)
     FEATURE_LATEST = FEATURE_COMPRPUBKEY // HD is optional, use FEATURE_COMPRPUBKEY as latest version
 };
 
@@ -662,7 +662,7 @@ public:
     void SetNull()
     {
         nWalletVersion = FEATURE_BASE;
-        nWalletMaxVersion = FEATURE_LATEST;
+        nWalletMaxVersion = FEATURE_BASE;
         fFileBacked = false;
         nMasterKeyMaxID = 0;
         pwalletdbEncryption = NULL;
