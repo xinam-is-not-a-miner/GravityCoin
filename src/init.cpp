@@ -1604,7 +1604,7 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
 	            
 	            if (!fReindex) {
                     // Check existing block index database version, reindex if needed
-                    if (pblocktree->GetBlockIndexVersion() < FEATURE_COMPRPUBKEY) {
+                    if (pblocktree->GetBlockIndexVersion() < ZC_ADVANCED_INDEX_VERSION) {
                         LogPrintf("Upgrade to new version of block index required, reindex forced\n");
                         delete pblocktree;
 			            fReindex = fReset = true;

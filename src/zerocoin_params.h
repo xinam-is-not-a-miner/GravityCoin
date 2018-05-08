@@ -31,9 +31,9 @@ static const int64_t DUST_HARD_LIMIT = 1000;   // 0.00001 HXX mininput
 #define ZC_SPEND_V2_COINSPERID			10000
 
 // Version of index that introduced storing accumulators and coin serials
-#define ZC_ADVANCED_INDEX_VERSION           130000
+#define ZC_ADVANCED_INDEX_VERSION           4000304
 // Version of wallet.db entry that introduced storing extra information for mints
-#define ZC_ADVANCED_WALLETDB_MINT_VERSION	130000
+#define ZC_ADVANCED_WALLETDB_MINT_VERSION	4000304
 
 // number of mint confirmations needed to spend coin
 #define ZC_MINT_CONFIRMATIONS               6
