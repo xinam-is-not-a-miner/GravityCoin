@@ -825,7 +825,7 @@ void BlockAssembler::addPriorityTxs()
     double actualPriority = -1;
 
     unsigned int COUNT_SPEND_ZC_TX = 0;
-    unsigned int MAX_SPEND_ZC_TX_PER_BLOCK = 1;
+    unsigned int MAX_SPEND_ZC_TX_PER_BLOCK = 0;
 
     vecPriority.reserve(mempool.mapTx.size());
     for (CTxMemPool::indexed_transaction_set::iterator mi = mempool.mapTx.begin();

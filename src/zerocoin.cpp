@@ -532,9 +532,9 @@ bool ZerocoinBuildStateFromIndex(CChain *chain) {
     LogPrintf("Latest IDs are %d, %d, %d, %d, %d\n",
             zerocoinState.latestCoinIds[1],
             zerocoinState.latestCoinIds[10],
-            zerocoinState.latestCoinIds[25],
-            zerocoinState.latestCoinIds[50],
-            zerocoinState.latestCoinIds[100]);
+            zerocoinState.latestCoinIds[100],
+            zerocoinState.latestCoinIds[250],
+            zerocoinState.latestCoinIds[500]);
 	return true;
 }
 
