@@ -34,13 +34,7 @@ bool CXnodeSync::CheckNodeHeight(CNode *pnode, bool fDisconnectStuckNodes) {
                       pCurrentBlockIndex->nHeight, stats.nCommonHeight, pnode->id);
         }
         return false;
-    } else if (pCurrentBlockIndex->nHeight < stats.nSyncHeight - 1) {
-        // This peer announced more headers than we have blocks currently
-        LogPrintf("CXnodeSync::CheckNodeHeight -- skipping peer, who announced more headers than we have blocks currently, nHeight=%d, nSyncHeight=%d, peer=%d\n",
-                  pCurrentBlockIndex->nHeight, stats.nSyncHeight, pnode->id);
-        return false;
     }
-
     return true;
 }
 
