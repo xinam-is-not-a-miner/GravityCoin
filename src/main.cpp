@@ -5849,7 +5849,16 @@ bool static ProcessMessage(CNode *pfrom, string strCommand, CDataStream &vRecv, 
 
         if (pfrom->cleanSubVer.find("/Hexx:4.0.3/") != std::string::npos)
         {
-                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned using obsolete version"));
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned using obsolete version 4.0.3"));
+                LogPrintf("Banned %d\n", pfrom->id);
+                Misbehaving(pfrom->GetId(), 100);
+                pfrom->fDisconnect = true;
+                return false;
+        }
+
+        if (pfrom->cleanSubVer.find("/Hexx:4.0.3.3/") != std::string::npos)
+        {
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned using obsolete version 4.0.3.3"));
                 LogPrintf("Banned %d\n", pfrom->id);
                 Misbehaving(pfrom->GetId(), 100);
                 pfrom->fDisconnect = true;
