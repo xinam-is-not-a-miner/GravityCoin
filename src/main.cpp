@@ -5828,13 +5828,6 @@ bool static ProcessMessage(CNode *pfrom, string strCommand, CDataStream &vRecv, 
             return false;
         }
 
-        if (pfrom->cleanSubVer == "/Hexx:4.0.3/")
-        {
-            printf("partner %s using obsolete version %s; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->strSubVer.c_str());
-            pfrom->fDisconnect = true;
-            return false;
-        }
-
         if (pfrom->nVersion == 10300)
             pfrom->nVersion = 300;
         if (!vRecv.empty())
@@ -5852,6 +5845,15 @@ bool static ProcessMessage(CNode *pfrom, string strCommand, CDataStream &vRecv, 
                 vRecv >> pfrom->fRelayTxes; // set to true after we get the first filter* message
             else
                 pfrom->fRelayTxes = true;
+        }
+
+        if (pfrom->cleanSubVer.find("/Hexx:4.0.3/") != std::string::npos)
+        {
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned using obsolete version"));
+                LogPrintf("Banned %d\n", pfrom->id);
+                Misbehaving(pfrom->GetId(), 100);
+                pfrom->fDisconnect = true;
+                return false;
         }
 
         // Disconnect if we connected to ourself
