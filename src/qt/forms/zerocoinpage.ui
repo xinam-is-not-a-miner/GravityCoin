@@ -63,6 +63,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="zerocoinMintButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="toolTip">
         <string>Mint Zerocoin</string>
        </property>
@@ -80,6 +83,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="zerocoinSpendButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="toolTip">
         <string>Spend Zerocoin</string>
        </property>
