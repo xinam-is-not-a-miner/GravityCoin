@@ -243,8 +243,6 @@ void Shutdown() {
     StopNode();
 
     // STORE DATA CACHES INTO SERIALIZED DAT FILES
-    CFlatDB<CXnodeMan> flatdb1("xncache.dat", "magicXnodeCache");
-    flatdb1.Dump(mnodeman);
     CFlatDB<CXnodePayments> flatdb2("xnpayments.dat", "magicXnodePaymentsCache");
     flatdb2.Dump(mnpayments);
     CFlatDB<CNetFulfilledRequestManager> flatdb4("netfulfilled.dat", "magicFulfilledCache");
@@ -1911,12 +1909,6 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
     // ********************************************************* Step 11b: Load cache data
 
     // LOAD SERIALIZED DAT FILES INTO DATA CACHES FOR INTERNAL USE
-
-    uiInterface.InitMessage(_("Loading xnode cache..."));
-    CFlatDB<CXnodeMan> flatdb1("xncache.dat", "magicXnodeCache");
-    if (!flatdb1.Load(mnodeman)) {
-        return InitError("Failed to load xnode cache from xncache.dat");
-    }
 
     if (mnodeman.size()) {
         uiInterface.InitMessage(_("Loading Xnode payment cache..."));
