@@ -585,7 +585,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
                         "#server=1\n"
                         "#rpcpassword=\n"
                         "#rpcusername=\n"
-                        "maxconnections=10\n"
+                        "maxconnections=16\n"
                         "#connect=\n"
                         "#addnode=\n"
                         "#xnode=1\n"
