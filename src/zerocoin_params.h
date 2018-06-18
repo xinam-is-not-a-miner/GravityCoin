@@ -20,7 +20,7 @@ static const int64_t DUST_HARD_LIMIT = 1000;   // 0.00001 HXX mininput
 #define ZC_V2_SWITCH_ID_50 15
 #define ZC_V2_SWITCH_ID_100 100
 
-#define ZC_V1_5_STARTING_BLOCK          280000
+#define ZC_V1_5_STARTING_BLOCK          284402
 
 #define ZC_V1_5_GRACEFUL_MEMPOOL_PERIOD	0
 #define ZC_V1_5_GRACEFUL_PERIOD			0
