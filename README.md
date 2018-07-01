@@ -4,8 +4,8 @@ Hexxcoin [HXX] Core update 2018
 [![Build Status](https://travis-ci.org/hexxcointakeover/hexxcoin.svg?branch=master)](https://travis-ci.org/hexxcointakeover/hexxcoin)
 
 # **Xnodes alive!**
-# ** DO NOT USE MINT FUNCTION UNTIL PATCHED**
-
+# ** DO NOT USE ZERO FUNCTION UNTIL NEW PROTOCOL FULLY ADDED**
+# ** CURRENTLY DISABLED UNTIL NEXT RELEASE**
 
 Anonymous Zerocoin Protocol:
 https://en.wikipedia.org/wiki/Zerocoin

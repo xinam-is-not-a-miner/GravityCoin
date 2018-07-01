@@ -2756,13 +2756,20 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp) {
         nAmount = AmountFromValue(params[0]);
     } else {
         throw runtime_error(
-                "spendzerocoin <amount>(1,10,100,250,500)\n");
+                "spendzerocoin <amount>(1,10,100,250,500) (\"hexxcoinaddress\")\n");
     }
 
+    CBitcoinAddress address;
+    string thirdPartyaddress = "";
+    if (params.size() > 1){
+    	// Address
+    	thirdPartyaddress = params[1].get_str();
+    	address = CBitcoinAddress(params[1].get_str());
+		 if (!address.IsValid())
+			 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid hexxcoin address");
+    }
 
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED,
-                           "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked();
 
     // Wallet comments
     CWalletTx wtx;
@@ -2771,7 +2778,7 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp) {
     CBigNum zcSelectedValue;
     bool zcSelectedIsUsed;
 
-    string strError = pwalletMain->SpendZerocoin(nAmount, denomination, wtx, coinSerial, txHash, zcSelectedValue,
+    string strError = pwalletMain->SpendZerocoin(thirdPartyaddress, nAmount, denomination, wtx, coinSerial, txHash, zcSelectedValue,
                                                  zcSelectedIsUsed);
 
     if (strError != "")
