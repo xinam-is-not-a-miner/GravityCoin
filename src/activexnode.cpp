@@ -3,9 +3,11 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "activexnode.h"
+#include "consensus/consensus.h"
 #include "xnode.h"
 #include "xnode-sync.h"
 #include "xnodeman.h"
+#include "xnode-payments.h"
 #include "protocol.h"
 
 extern CWallet *pwalletMain;
@@ -249,7 +251,7 @@ void CActiveXnode::ManageStateRemote() {
     mnodeman.CheckXnode(pubKeyXnode);
     xnode_info_t infoMn = mnodeman.GetXnodeInfo(pubKeyXnode);
     if (infoMn.fInfoValid) {
-        if (infoMn.nProtocolVersion != PROTOCOL_VERSION) {
+        if (infoMn.nProtocolVersion < MIN_XNODE_PAYMENT_PROTO_VERSION_1 || infoMn.nProtocolVersion > MIN_XNODE_PAYMENT_PROTO_VERSION_2) {
             nState = ACTIVE_XNODE_NOT_CAPABLE;
             strNotCapableReason = "Invalid protocol version";
             LogPrintf("CActiveXnode::ManageStateRemote -- %s: %s\n", GetStateString(), strNotCapableReason);
