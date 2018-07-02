@@ -207,7 +207,7 @@ void CXnode::Check(bool fForce) {
     // xnode doesn't meet payment protocol requirements ...
     bool fRequireUpdate = nProtocolVersion < mnpayments.GetMinXnodePaymentsProto() ||
                           // or it's our own node and we just updated it to the new protocol but we are still waiting for activation ...
-                          (fOurXnode && nProtocolVersion < PROTOCOL_VERSION);
+                          (fOurXnode && (nProtocolVersion < MIN_XNODE_PAYMENT_PROTO_VERSION_1 || nProtocolVersion > MIN_XNODE_PAYMENT_PROTO_VERSION_2));
 
     if (fRequireUpdate) {
         nActiveState = XNODE_UPDATE_REQUIRED;
