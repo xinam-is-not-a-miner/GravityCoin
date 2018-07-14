@@ -415,12 +415,12 @@ UniValue importwallet(const UniValue& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "importwallet \"filename\"\n"
-            "\nImports keys from a wallet dump file (see dumpwallet).\n"
+            "\nImports keys from a wallet dump file (see reveal_wallet_keys).\n"
             "\nArguments:\n"
             "1. \"filename\"    (string, required) The wallet file\n"
             "\nExamples:\n"
             "\nDump the wallet\n"
-            + HelpExampleCli("dumpwallet", "\"test\"") +
+            + HelpExampleCli("reveal_wallet_keys", "\"test\"") +
             "\nImport the wallet\n"
             + HelpExampleCli("importwallet", "\"test\"") +
             "\nImport using the json rpc call\n"
@@ -522,6 +522,7 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "dumpprivkey \"bitcoinaddress\"\n"
+            "\nUSING THIS COMMAND YOU MAY LOSE ALL YOUR COINS IF SCAMMER ASKING THIS KEY!!!\n"
             "\nReveals the private key corresponding to 'bitcoinaddress'.\n"
             "Then the importprivkey can be used with this output\n"
             "\nArguments:\n"
@@ -552,20 +553,21 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
 }
 
 
-UniValue dumpwallet(const UniValue& params, bool fHelp)
+UniValue reveal_wallet_keys(const UniValue& params, bool fHelp)
 {
     if (!EnsureWalletIsAvailable(fHelp))
         return NullUniValue;
     
     if (fHelp || params.size() != 1)
         throw runtime_error(
-            "dumpwallet \"filename\"\n"
+            "\nUSING THIS COMMAND YOU MAY LOSE ALL YOUR COINS IF SCAMMER ASKING THIS FILE!!!\n"
+            "reveal_wallet_keys \"filename\"\n"
             "\nDumps all wallet keys in a human-readable format.\n"
             "\nArguments:\n"
             "1. \"filename\"    (string, required) The filename\n"
             "\nExamples:\n"
-            + HelpExampleCli("dumpwallet", "\"test\"")
-            + HelpExampleRpc("dumpwallet", "\"test\"")
+            + HelpExampleCli("reveal_wallet_keys", "\"test\"")
+            + HelpExampleRpc("reveal_wallet_keys", "\"test\"")
         );
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
