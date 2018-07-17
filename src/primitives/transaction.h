@@ -154,6 +154,8 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(nValue);
         READWRITE(*(CScriptBase*)(&scriptPubKey));
+        if (ser_action.ForRead())
+            nRounds = -10;
     }
 
     void SetNull()
@@ -217,9 +219,8 @@ public:
     friend bool operator==(const CTxOut& a, const CTxOut& b)
     {
         return (a.nValue       == b.nValue &&
-                a.scriptPubKey == b.scriptPubKey &&
-                a.nRounds      == b.nRounds);
-    }
+                a.scriptPubKey == b.scriptPubKey);
+	}
 
     friend bool operator!=(const CTxOut& a, const CTxOut& b)
     {

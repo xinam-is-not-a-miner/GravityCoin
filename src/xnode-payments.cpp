@@ -732,7 +732,7 @@ bool CXnodePayments::ProcessBlock(int nBlockHeight) {
 void CXnodePaymentVote::Relay() {
     // do not relay until synced
     if (!xnodeSync.IsWinnersListSynced()) {
-        LogPrintf("CXnodePaymentVote::Relay - xnodeSync.IsWinnersListSynced() not sync\n");
+        LogPrint("xnode", "CXnodePaymentVote::Relay - xnodeSync.IsWinnersListSynced() not sync\n");
         return;
     }
     CInv inv(MSG_XNODE_PAYMENT_VOTE, GetHash());

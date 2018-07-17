@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "activexnode.h"
+#include "consensus/consensus.h"
 #include "consensus/validation.h"
 #include "darksend.h"
 #include "init.h"
@@ -203,6 +204,11 @@ void CXnode::Check(bool fForce) {
 
     int nActiveStatePrev = nActiveState;
     bool fOurXnode = fXNode && activeXnode.pubKeyXnode == pubKeyXnode;
+
+    // xnode doesn't meet payment protocol requirements ...
+/*    bool fRequireUpdate = nProtocolVersion < mnpayments.GetMinXnodePaymentsProto() ||
+                          // or it's our own node and we just updated it to the new protocol but we are still waiting for activation ...
+                          (fOurXnode && nProtocolVersion < PROTOCOL_VERSION); */
 
     // xnode doesn't meet payment protocol requirements ...
     bool fRequireUpdate = nProtocolVersion < mnpayments.GetMinXnodePaymentsProto() ||
@@ -500,7 +506,6 @@ bool CXnodeBroadcast::Create(CTxIn txin, CService service, CKey keyCollateralAdd
     }
 
     mnbRet = CXnodeBroadcast(service, txin, pubKeyCollateralAddressNew, pubKeyXnodeNew, PROTOCOL_VERSION);
-
     if (!mnbRet.IsValidNetAddr()) {
         strErrorRet = strprintf("Invalid IP address, xnode=%s", txin.prevout.ToStringShort());
         LogPrintf("CXnodeBroadcast::Create -- %s\n", strErrorRet);
@@ -855,7 +860,7 @@ bool CXnodePing::CheckAndUpdate(CXnode *pmn, bool fFromNewBroadcast, int &nDos) 
         }
     }
 
-    LogPrint("xnode", "CXnodePing::CheckAndUpdate -- New ping: xnode=%s  blockHash=%s  sigTime=%d\n", vin.prevout.ToStringShort(), blockHash.ToString(), sigTime);
+    //LogPrint("xnode", "CXnodePing::CheckAndUpdate -- New ping: xnode=%s  blockHash=%s  sigTime=%d\n", vin.prevout.ToStringShort(), blockHash.ToString(), sigTime);
 
     // LogPrintf("mnping - Found corresponding mn for vin: %s\n", vin.prevout.ToStringShort());
     // update only if there is no known ping for this xnode or

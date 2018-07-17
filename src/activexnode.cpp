@@ -251,7 +251,8 @@ void CActiveXnode::ManageStateRemote() {
     mnodeman.CheckXnode(pubKeyXnode);
     xnode_info_t infoMn = mnodeman.GetXnodeInfo(pubKeyXnode);
     if (infoMn.fInfoValid) {
-        if (infoMn.nProtocolVersion < MIN_XNODE_PAYMENT_PROTO_VERSION_1 || infoMn.nProtocolVersion > MIN_XNODE_PAYMENT_PROTO_VERSION_2) {
+        if (infoMn.nProtocolVersion < MIN_XNODE_PAYMENT_PROTO_VERSION_1
+                || infoMn.nProtocolVersion > MIN_XNODE_PAYMENT_PROTO_VERSION_2) {
             nState = ACTIVE_XNODE_NOT_CAPABLE;
             strNotCapableReason = "Invalid protocol version";
             LogPrintf("CActiveXnode::ManageStateRemote -- %s: %s\n", GetStateString(), strNotCapableReason);

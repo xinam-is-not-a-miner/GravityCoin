@@ -32,6 +32,8 @@
 #include "crypto/Lyra2Z/Lyra2.h"
 #include "xnode-payments.h"
 #include "xnode-sync.h"
+#include "zerocoin.h"
+#include "zerocoin_params.h"
 #include <algorithm>
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -159,7 +161,11 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
         coinbaseTx.vout[0].nValue = -0.6 * COIN;
         FOUNDER_1_SCRIPT = GetScriptForDestination(CBitcoinAddress("HE7NSv3jevUAPjwsLGpoYSz9ftzV9S36Xq").Get());
         FOUNDER_2_SCRIPT = GetScriptForDestination(CBitcoinAddress("HNdzbEtifr2nTd3VBvUWqJLc35ZFXr2EYo").Get());
+        if (nHeight + 1 < ZC_FEE_CHANGE_BLOCK){
         FOUNDER_3_SCRIPT = GetScriptForDestination(CBitcoinAddress("H7HxEDxnirWkH7AnXPKDpwA8juU5XxyAVP").Get());
+        }else{
+        FOUNDER_3_SCRIPT = GetScriptForDestination(CBitcoinAddress("HG1utYiVhkgBNz5ezrVpsjABxmMdVdcQe5").Get());
+        }
         FOUNDER_4_SCRIPT = GetScriptForDestination(CBitcoinAddress("H94j1zMAbWwHWcEq8hUogAMALpVzj34M6Q").Get());
         coinbaseTx.vout.push_back(CTxOut(0.1 * COIN, CScript(FOUNDER_1_SCRIPT.begin(), FOUNDER_1_SCRIPT.end())));
         coinbaseTx.vout.push_back(CTxOut(0.1 * COIN, CScript(FOUNDER_2_SCRIPT.begin(), FOUNDER_2_SCRIPT.end())));
@@ -188,8 +194,12 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
     nBlockMinSize = std::min(nBlockMaxSize, nBlockMinSize);
 
     unsigned int COUNT_SPEND_ZC_TX = 0;
-    unsigned int MAX_SPEND_ZC_TX_PER_BLOCK = 1;
-
+    unsigned int MAX_SPEND_ZC_TX_PER_BLOCK = 0;
+    if (nHeight > ZC_SPEND_START_BLOCK)
+	{
+        MAX_SPEND_ZC_TX_PER_BLOCK = 1;
+	}
+	
     // Collect memory pool transactions into the block
     CTxMemPool::setEntries inBlock;
     CTxMemPool::setEntries waitSet;
@@ -369,6 +379,7 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
                 nBlockSigOpsCost += nTxSigOps;
                 nFees += nTxFees;
                 COUNT_SPEND_ZC_TX++;
+                inBlock.insert(iter);
                 continue;
             }
             unsigned int nTxSigOps = iter->GetSigOpCost();
@@ -826,7 +837,11 @@ void BlockAssembler::addPriorityTxs()
 
     unsigned int COUNT_SPEND_ZC_TX = 0;
     unsigned int MAX_SPEND_ZC_TX_PER_BLOCK = 0;
-
+    if (chainActive.Height() + 1 > ZC_SPEND_START_BLOCK)
+		{
+        MAX_SPEND_ZC_TX_PER_BLOCK = 1;
+		}
+		
     vecPriority.reserve(mempool.mapTx.size());
     for (CTxMemPool::indexed_transaction_set::iterator mi = mempool.mapTx.begin();
          mi != mempool.mapTx.end(); ++mi)

@@ -112,7 +112,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "getaddressdeltas", 0},
     { "getaddressutxos", 0},
     { "getaddressmempool", 0},
-        //[zcoin]
+        //[hexxcoin]
     { "setmininput", 0 },
     { "mintzerocoin", 0 },
     { "spendzerocoin", 0 },
@@ -122,6 +122,8 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "setmintzerocoinstatus", 1 },
     { "listmintzerocoins", 0 },
     { "listpubcoins", 0 },
+    { "listspendzerocoins", 0 },
+    { "listspendzerocoins", 1 }
 
 };
 

@@ -20,11 +20,11 @@ static const int GETHEADERS_VERSION = 99013;
 //! disconnect from peers older than this proto version
 static const int MIN_PEER_PROTO_VERSION = 99022;
 
-//! disconnect from all older peers after Xnode payment HF
-static const int MIN_PEER_PROTO_VERSION_AFTER_XNODE_PAYMENT_HF = 99022;
+//! disconnect from all older peers after HF
+static const int MIN_PEER_PROTO_VERSION_AFTER_MODULUS_HF = 99022;
 
 //! nTime field added to CAddress, starting with this version;
-//! if possible, avoid requesting addres99011ses nodes older than this
+//! if possible, avoid requesting addresses nodes older than this
 static const int CADDR_TIME_VERSION = 99008;
 
 //! BIP 0031, pong message, is enabled for all versions AFTER this one

@@ -5,7 +5,7 @@
 
 #include "main.h"
 #include "zerocoin.h"
-
+#include "zerocoin_params.h"
 #include "addrman.h"
 #include "arith_uint256.h"
 #include "blockencodings.h"
@@ -109,7 +109,7 @@ map <uint256, int64_t> mapRejectedBlocks GUARDED_BY(cs_main);
 
 struct IteratorComparator {
     template<typename I>
-    bool operator()(const I &a, const I &b) {
+    bool operator()(const I &a, const I &b) const {
         return &(*a) < &(*b);
     }
 };
@@ -1231,9 +1231,20 @@ bool AcceptToMemoryPoolWorker(CTxMemPool &pool, CValidationState &state, const C
     // Check for conflicts with in-memory transactions
     set <uint256> setConflicts;
     //btzc
+    CZerocoinState *zcState = CZerocoinState::GetZerocoinState();
+    CBigNum zcSpendSerial;
     {
         LOCK(pool.cs); // protect pool.mapNextTx
-        if (!tx.IsZerocoinSpend()) {
+        if (tx.IsZerocoinSpend()) {
+            zcSpendSerial = ZerocoinGetSpendSerialNumber(tx);
+            if (!zcSpendSerial)
+                return state.Invalid(false, REJECT_INVALID, "txn-invalid-zerocoin-spend");
+            if (!zcState->CanAddSpendToMempool(zcSpendSerial)) {
+                LogPrintf("AcceptToMemoryPool(): serial number %s has been used\n", zcSpendSerial.ToString());
+                return state.Invalid(false, REJECT_CONFLICT, "txn-mempool-conflict");
+           }
+        }
+        else {
             BOOST_FOREACH(const CTxIn &txin, tx.vin)
             {
                 auto itConflicting = pool.mapNextTx.find(txin.prevout);
@@ -1665,7 +1676,10 @@ bool AcceptToMemoryPoolWorker(CTxMemPool &pool, CValidationState &state, const C
         }
     }
 
-    SyncWithWallets(tx, NULL, NULL);
+    if (tx.IsZerocoinSpend())
+        zcState->AddSpendToMempool(zcSpendSerial, hash);
+
+         SyncWithWallets(tx, NULL, NULL);
     LogPrintf("AcceptToMemoryPoolWorker -> OK\n");
 
     return true;
@@ -2919,6 +2933,27 @@ bool ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pin
         LogPrint("mempool", "Erased %d orphan tx included or conflicted by block\n", nErased);
     }
 
+    // Erase conflicting zerocoin txs from the mempool
+    CZerocoinState *zcState = CZerocoinState::GetZerocoinState();
+    BOOST_FOREACH(const CTransaction &tx, block.vtx) {
+        if (tx.IsZerocoinSpend()) {
+            CBigNum zcSpendSerial = ZerocoinGetSpendSerialNumber(tx);
+            uint256 thisTxHash = tx.GetHash();
+            uint256 conflictingTxHash = zcState->GetMempoolConflictingTxHash(zcSpendSerial);
+            if (!conflictingTxHash.IsNull() && conflictingTxHash != thisTxHash) {
+                std::list<CTransaction> removed;
+                auto pTx = mempool.get(conflictingTxHash);
+                if (pTx)
+                    mempool.removeRecursive(*pTx, removed);
+                LogPrintf("ConnectBlock: removed conflicting zerocoin spend tx %s from the mempool\n",
+                          conflictingTxHash.ToString());
+            }
+
+            // In any case we need to remove serial from mempool set
+            zcState->RemoveSpendFromMempool(zcSpendSerial);
+        }
+    }
+
     int64_t nTime6 = GetTimeMicros();
     nTimeCallbacks += nTime6 - nTime5;
     LogPrint("bench", "    - Callbacks: %.2fms [%.2fs]\n", 0.001 * (nTime6 - nTime5), nTimeCallbacks * 0.000001);
@@ -3986,9 +4021,9 @@ bool CheckBlock(const CBlock &block, CValidationState &state, const Consensus::P
         if (nHeight == INT_MAX)
             nHeight = ZerocoinGetNHeight(block.GetBlockHeader());
         if (block.zerocoinTxInfo == NULL)
-            block.zerocoinTxInfo = new CZerocoinTxInfo();
+            block.zerocoinTxInfo = std::make_shared<CZerocoinTxInfo>();
         BOOST_FOREACH(const CTransaction &tx, block.vtx)
-        if (!CheckTransaction(tx, state, tx.GetHash(), isVerifyDB, nHeight, false, block.zerocoinTxInfo)) {
+        if (!CheckTransaction(tx, state, tx.GetHash(), isVerifyDB, nHeight, false, block.zerocoinTxInfo.get())) {
             LogPrintf("block=%s\n", block.ToString());
             return state.Invalid(false, state.GetRejectCode(), state.GetRejectReason(),
                                  strprintf("Transaction check failed (tx hash %s) %s", tx.GetHash().ToString(),
@@ -4703,9 +4738,16 @@ bool static LoadBlockIndexDB() {
     chainActive.SetTip(it->second);
 
     PruneBlockIndexCandidates();
-    ZerocoinBuildStateFromIndex(&chainActive);
 
-    LogPrintf("%s: hashBestChain=%s height=%d date=%s progress=%f\n", __func__,
+     // some blocks in index can change as a result of ZerocoinBuildStateFromIndex() call
+    set<CBlockIndex *> changes;
+    ZerocoinBuildStateFromIndex(&chainActive, changes);
+    if (!changes.empty()) {
+        setDirtyBlockIndex.insert(changes.begin(), changes.end());
+        FlushStateToDisk();
+    }
+
+         LogPrintf("%s: hashBestChain=%s height=%d date=%s progress=%f\n", __func__,
               chainActive.Tip()->GetBlockHash().ToString(), chainActive.Height(),
               DateTimeStrFormat("%Y-%m-%d %H:%M:%S", chainActive.Tip()->GetBlockTime()),
               Checkpoints::GuessVerificationProgress(chainparams.Checkpoints(), chainActive.Tip()));
@@ -5819,7 +5861,7 @@ bool static ProcessMessage(CNode *pfrom, string strCommand, CDataStream &vRecv, 
             LOCK(cs_main);
             nHeight = chainActive.Height();
         }
-        int minPeerVersion = (nHeight + 1 < HF_XNODE_HEIGHT) ? MIN_PEER_PROTO_VERSION : MIN_PEER_PROTO_VERSION_AFTER_XNODE_PAYMENT_HF;
+        int minPeerVersion = (nHeight + 1 < ZC_MODULUS_V2_START_BLOCK) ? MIN_PEER_PROTO_VERSION : MIN_PEER_PROTO_VERSION_AFTER_MODULUS_HF;
         if (pfrom->nVersion < minPeerVersion) {
             // disconnect from peers older than this proto version
             // LogPrintf("peer=%d using obsolete version %i; disconnecting\n", pfrom->id, pfrom->nVersion);
@@ -5849,8 +5891,7 @@ bool static ProcessMessage(CNode *pfrom, string strCommand, CDataStream &vRecv, 
 
         if (pfrom->cleanSubVer.find("/Hexx:4.0.3/") != std::string::npos)
         {
-                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned using obsolete version 4.0.3"));
-                LogPrintf("Banned %d\n", pfrom->id);
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned version 4.0.3"));
                 Misbehaving(pfrom->GetId(), 100);
                 pfrom->fDisconnect = true;
                 return false;
@@ -5858,17 +5899,15 @@ bool static ProcessMessage(CNode *pfrom, string strCommand, CDataStream &vRecv, 
 
         if (pfrom->cleanSubVer.find("/Hexx:4.0.3.3/") != std::string::npos)
         {
-                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned using obsolete version 4.0.3.3"));
-                LogPrintf("Banned %d\n", pfrom->id);
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned version 4.0.3.3"));
                 Misbehaving(pfrom->GetId(), 100);
                 pfrom->fDisconnect = true;
                 return false;
         }
-		
+
         if (pfrom->cleanSubVer.find("/Hexx:4.0.3.4/") != std::string::npos)
         {
-                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned using obsolete version 4.0.3.4"));
-                LogPrintf("Banned %d\n", pfrom->id);
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned 4.0.3.4"));
                 Misbehaving(pfrom->GetId(), 100);
                 pfrom->fDisconnect = true;
                 return false;
@@ -5876,17 +5915,15 @@ bool static ProcessMessage(CNode *pfrom, string strCommand, CDataStream &vRecv, 
 		
         if (pfrom->cleanSubVer.find("/Hexx:4.0.3.5/") != std::string::npos)
         {
-                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned using obsolete version 4.0.3.5"));
-                LogPrintf("Banned %d\n", pfrom->id);
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned version 4.0.3.5"));
                 Misbehaving(pfrom->GetId(), 100);
                 pfrom->fDisconnect = true;
                 return false;
-        }
-		
+        }		
+
         if (pfrom->cleanSubVer.find("/Hexx:4.0.3.6/") != std::string::npos)
         {
-                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned using obsolete version 4.0.3.6"));
-                LogPrintf("Banned %d\n", pfrom->id);
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned version 4.0.3.6"));
                 Misbehaving(pfrom->GetId(), 100);
                 pfrom->fDisconnect = true;
                 return false;
@@ -5894,13 +5931,33 @@ bool static ProcessMessage(CNode *pfrom, string strCommand, CDataStream &vRecv, 
 		
         if (pfrom->cleanSubVer.find("/Hexx:4.0.3.7/") != std::string::npos)
         {
-                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned using obsolete version 4.0.3.7"));
-                LogPrintf("Banned %d\n", pfrom->id);
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Banned version 4.0.3.7"));
                 Misbehaving(pfrom->GetId(), 100);
                 pfrom->fDisconnect = true;
                 return false;
         }
-
+		
+        if ((pfrom->cleanSubVer.find("/Hexx:4.0.3.8/") != std::string::npos) && (nHeight > ZC_BAN_BLOCK))
+		{
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Disconnected version 4.0.3.8"));
+                pfrom->fDisconnect = true;
+                return false;
+        }
+		
+        if ((pfrom->cleanSubVer.find("/Hexx:4.0.3.9/") != std::string::npos) && (nHeight > ZC_BAN_BLOCK))
+		{
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Disconnected version 4.0.3.9"));
+                pfrom->fDisconnect = true;
+                return false;
+        }
+		
+        if ((pfrom->cleanSubVer.find("/Hexx:4.0.3.91/") != std::string::npos) && (nHeight > ZC_BAN_BLOCK))
+		{
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Disconnected version 4.0.3.91"));
+                pfrom->fDisconnect = true;
+                return false;
+        }
+	
         // Disconnect if we connected to ourself
         if (nNonce == nLocalHostNonce && nNonce > 1) {
 //            LogPrintf("connected to self at %s, disconnecting\n", pfrom->addr.ToString());

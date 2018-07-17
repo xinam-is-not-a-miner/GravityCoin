@@ -5,6 +5,8 @@
 
 #include "chainparams.h"
 #include "consensus/merkle.h"
+#include "consensus/consensus.h"
+#include "zerocoin_params.h"
 #include "tinyformat.h"
 #include "util.h"
 #include "utilstrencodings.h"
@@ -124,13 +126,24 @@ public:
         (220974, uint256S("0xd85b2231760133f521aec73e240c7867b62f4981aecbf4d2f797813925ecdccb"))
         (222665, uint256S("0x348fda46a431cc2b66f94f9086df05491d8c645576de3d5ab783434fd9c47043"))
         (258199, uint256S("0x012a7e8ad93aca202d3833f843e79b7eabf124e2697b7b411d51c352589ee2e6"))
-        (267697, uint256S("0x3f0726ac75b77902e94cd172fc997ed7979d8238e28133f5300d09c87ba3d479"))
-        (285209, uint256S("0xd6ac98442a8f48d05f3e2d936f23a6d681af017b868ddce5abbefec70f6b0f4a")),
-        1529431944, // * UNIX timestamp of last checkpoint block
+        (267697, uint256S("0x3f0726ac75b77902e94cd172fc997ed7979d8238e28133f5300d09c87ba3d479")),
+        1526792483, // * UNIX timestamp of last checkpoint block
         204045,    // * total number of transactions between genesis and last checkpoint
                   //   (the tx=... number in the SetBestChain debug.log lines)
 		576.0 // * estimated number of transactions per day after checkpoint
 		};
+
+        nCheckBugFixedAtBlock = ZC_CHECK_BUG_FIXED_AT_BLOCK;
+        nSpendV15StartBlock = ZC_V1_5_STARTING_BLOCK;
+        nSpendV2ID_1 = ZC_V2_SWITCH_ID_1;
+        nSpendV2ID_10 = ZC_V2_SWITCH_ID_10;
+        nSpendV2ID_25 = ZC_V2_SWITCH_ID_25;
+        nSpendV2ID_50 = ZC_V2_SWITCH_ID_50;
+        nSpendV2ID_100 = ZC_V2_SWITCH_ID_100;
+        nModulusV2StartBlock = ZC_MODULUS_V2_START_BLOCK;
+        nModulusV1MempoolStopBlock = ZC_MODULUS_V1_MEMPOOL_STOP_BLOCK;
+        nModulusV1StopBlock = ZC_MODULUS_V1_STOP_BLOCK;
+
 	}
 };
 
