@@ -5957,6 +5957,13 @@ bool static ProcessMessage(CNode *pfrom, string strCommand, CDataStream &vRecv, 
                 pfrom->fDisconnect = true;
                 return false;
         }
+		
+        if ((pfrom->cleanSubVer.find("/Hexx:4.0.4.0/") != std::string::npos) && (nHeight > ZC_BAN_BLOCK))
+		{
+                pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Disconnected version 4.0.4.0"));
+                pfrom->fDisconnect = true;
+                return false;
+        }
 	
         // Disconnect if we connected to ourself
         if (nNonce == nLocalHostNonce && nNonce > 1) {
