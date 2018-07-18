@@ -1,7 +1,7 @@
 Xnode Instructions and Notes
 =============================
  - Version 0.2.1
- - Date: 17 July 2018
+ - Date: 18 July 2018
 
 Prerequisites
 -------------
@@ -24,7 +24,7 @@ Either
 	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/chain/chainfiles.zip
 	unzip chainfiles.zip
 	cd ..
-	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/4.0.4.0/linux-x64.tar.gz
+	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/4.0.4.1/linux-x64.tar.gz
 	tar xvfz linux-x64.tar.gz
 	
 	./hexxcoind -daemon
