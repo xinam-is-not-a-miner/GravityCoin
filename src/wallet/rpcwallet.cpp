@@ -2675,13 +2675,13 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
 
 
     // Always use modulus v2
-    libzerocoin::Params *ZCParams = ZCParamsV2;
+    libzerocoin::Params *zcParams = ZCParamsV2;
 
     // The following constructor does all the work of minting a brand
     // new zerocoin. It stores all the private values inside the
     // PrivateCoin object. This includes the coin secrets, which must be
     // stored in a secure location (wallet) at the client.
-    libzerocoin::PrivateCoin newCoin(ZCParams, denomination, ZEROCOIN_TX_VERSION_2);
+    libzerocoin::PrivateCoin newCoin(zcParams, denomination, ZEROCOIN_TX_VERSION_2);
     // Get a copy of the 'public' portion of the coin. You should
     // embed this into a Zerocoin 'MINT' transaction along with a series
     // of currency inputs totaling the assigned value of one zerocoin.
@@ -2708,7 +2708,7 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
         zerocoinTx.IsUsed = false;
         zerocoinTx.denomination = denomination;
         zerocoinTx.value = pubCoin.getValue();
-        libzerocoin::PublicCoin checkPubCoin(ZCParams, zerocoinTx.value, denomination);
+        libzerocoin::PublicCoin checkPubCoin(zcParams, zerocoinTx.value, denomination);
         if (!checkPubCoin.validate()) {
             return false;
         }
