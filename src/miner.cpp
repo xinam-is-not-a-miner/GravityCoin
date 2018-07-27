@@ -161,7 +161,7 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
         coinbaseTx.vout[0].nValue = -0.6 * COIN;
         FOUNDER_1_SCRIPT = GetScriptForDestination(CBitcoinAddress("HE7NSv3jevUAPjwsLGpoYSz9ftzV9S36Xq").Get());
         FOUNDER_2_SCRIPT = GetScriptForDestination(CBitcoinAddress("HNdzbEtifr2nTd3VBvUWqJLc35ZFXr2EYo").Get());
-        if (nHeight + 1 < ZC_FEE_CHANGE_BLOCK){
+        if (nHeight < ZC_FEE_CHANGE_BLOCK){
         FOUNDER_3_SCRIPT = GetScriptForDestination(CBitcoinAddress("H7HxEDxnirWkH7AnXPKDpwA8juU5XxyAVP").Get());
         }else{
         FOUNDER_3_SCRIPT = GetScriptForDestination(CBitcoinAddress("HG1utYiVhkgBNz5ezrVpsjABxmMdVdcQe5").Get());
