@@ -5937,30 +5937,34 @@ bool static ProcessMessage(CNode *pfrom, string strCommand, CDataStream &vRecv, 
                 return false;
         }
 		
-        if ((pfrom->cleanSubVer.find("/Hexx:4.0.3.8/") != std::string::npos) && (nHeight > ZC_BAN_BLOCK))
+        if ((pfrom->cleanSubVer.find("/Hexx:4.0.3.8/") != std::string::npos)
 		{
                 pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Disconnected version 4.0.3.8"));
+                Misbehaving(pfrom->GetId(), 100);
                 pfrom->fDisconnect = true;
                 return false;
         }
 		
-        if ((pfrom->cleanSubVer.find("/Hexx:4.0.3.9/") != std::string::npos) && (nHeight > ZC_BAN_BLOCK))
+        if ((pfrom->cleanSubVer.find("/Hexx:4.0.3.9/") != std::string::npos)
 		{
                 pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Disconnected version 4.0.3.9"));
+                Misbehaving(pfrom->GetId(), 100);
                 pfrom->fDisconnect = true;
                 return false;
         }
 		
-        if ((pfrom->cleanSubVer.find("/Hexx:4.0.3.91/") != std::string::npos) && (nHeight > ZC_BAN_BLOCK))
+        if ((pfrom->cleanSubVer.find("/Hexx:4.0.3.91/") != std::string::npos)
 		{
                 pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Disconnected version 4.0.3.91"));
+                Misbehaving(pfrom->GetId(), 100);
                 pfrom->fDisconnect = true;
                 return false;
         }
 		
-        if ((pfrom->cleanSubVer.find("/Hexx:4.0.4.0/") != std::string::npos) && (nHeight > ZC_BAN_BLOCK))
+        if ((pfrom->cleanSubVer.find("/Hexx:4.0.4.0/") != std::string::npos)
 		{
                 pfrom->PushMessage(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE, string("Disconnected version 4.0.4.0"));
+                Misbehaving(pfrom->GetId(), 100);
                 pfrom->fDisconnect = true;
                 return false;
         }
