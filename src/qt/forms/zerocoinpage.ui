@@ -3,7 +3,7 @@
  <class>ZerocoinPage</class>
  <widget class="QWidget" name="ZerocoinPage">
   <property name="enabled">
-   <bool>false</bool>
+   <bool>true</bool>
   </property>
   <property name="geometry">
    <rect>
@@ -108,7 +108,7 @@
      <item>
       <widget class="QTabWidget" name="tabWidget">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -129,7 +129,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
@@ -201,7 +201,7 @@
         </widget>
         <widget class="QLineEdit" name="spendToThirdPartyAddress">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="geometry">
           <rect>
