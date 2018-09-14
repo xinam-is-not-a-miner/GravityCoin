@@ -97,7 +97,14 @@ public:
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x322bad477efb4b33fa4b1f0b2861eaf543c61068da9898a95062fdb02ada486f"));
         assert(genesis.hashMerkleRoot == uint256S("0x31f49b23f8a1185f85a6a6972446e72a86d50ca0e3b3ffe217d0c2fea30473db"));
+        vSeeds.push_back(CDNSSeedData("5.79.119.106", "5.79.119.106"));
         vSeeds.push_back(CDNSSeedData("76.74.170.128", "76.74.170.128"));
+        vSeeds.push_back(CDNSSeedData("81.171.19.63", "81.171.19.63"));
+        vSeeds.push_back(CDNSSeedData("81.171.29.144", "81.171.29.144"));
+        vSeeds.push_back(CDNSSeedData("95.211.244.14", "95.211.244.14"));
+        vSeeds.push_back(CDNSSeedData("81.17.60.209", "81.17.60.209"));
+        vSeeds.push_back(CDNSSeedData("81.17.60.210", "81.17.60.210"));
+        vSeeds.push_back(CDNSSeedData("81.17.60.211", "81.17.60.211"));
         vSeeds.push_back(CDNSSeedData("hxx-addnode01.chainsilo.com", "hxx-addnode01.chainsilo.com"));
         vSeeds.push_back(CDNSSeedData("hxx-addnode02.chainsilo.com", "hxx-addnode02.chainsilo.com"));
         vSeeds.push_back(CDNSSeedData("hxx-addnode03.chainsilo.com", "hxx-addnode03.chainsilo.com"));
