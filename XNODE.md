@@ -24,7 +24,7 @@ Either
 	wget https://chainfiles.chainsilo.com/chainfilesbin.zip
 	unzip chainfiles.zip
 	cd ..
-	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/4.0.4.1/linux-x64.tar.gz
+	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/4.0.4.2/linux-x64.tar.gz
 	tar xvfz linux-x64.tar.gz
 	
 	./hexxcoind -daemon
