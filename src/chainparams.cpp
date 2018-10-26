@@ -97,6 +97,7 @@ public:
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x322bad477efb4b33fa4b1f0b2861eaf543c61068da9898a95062fdb02ada486f"));
         assert(genesis.hashMerkleRoot == uint256S("0x31f49b23f8a1185f85a6a6972446e72a86d50ca0e3b3ffe217d0c2fea30473db"));
+        vSeeds.push_back(CDNSSeedData("54.38.187.24", "54.38.187.24"));
         vSeeds.push_back(CDNSSeedData("5.79.119.106", "5.79.119.106"));
         vSeeds.push_back(CDNSSeedData("76.74.170.128", "76.74.170.128"));
         vSeeds.push_back(CDNSSeedData("81.171.19.63", "81.171.19.63"));
