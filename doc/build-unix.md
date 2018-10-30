@@ -1,12 +1,12 @@
 UNIX BUILD NOTES
 ====================
-Some notes on how to build hexxcoin core in Unix.
+Some notes on how to build GravityCoin Core in Unix.
 
 (for OpenBSD specific instructions, see [build-openbsd.md](build-openbsd.md))
 
 Note
 ---------------------
-Always use absolute paths to configure and compile hexxcoin and the dependencies,
+Always use absolute paths to configure and compile GravityCoin and the dependencies,
 for example, when specifying the path of the dependency:
 
 	../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
@@ -24,7 +24,7 @@ make
 make install # optional
 ```
 
-This will build hexxcoin-qt as well if the dependencies are met.
+This will build GravityCoin-qt as well if the dependencies are met.
 
 Dependencies
 ---------------------
@@ -122,7 +122,7 @@ libqrencode (optional) can be installed with:
 
     sudo apt-get install libqrencode-dev
 
-Once these are installed, they will be found by configure and a hexxcoin-qt executable will be
+Once these are installed, they will be found by configure and a GravityCoin-qt executable will be
 built by default.
 
 Dependency Build Instructions: Fedora
@@ -145,7 +145,7 @@ libqrencode (optional) can be installed with:
 
 Notes
 -----
-The release is built with GCC and then "strip hexxcoind" to strip the debug
+The release is built with GCC and then "strip GravityCoind" to strip the debug
 symbols, which reduces the executable size by about 90%.
 
 
@@ -166,10 +166,10 @@ Berkeley DB
 It is recommended to use Berkeley DB 4.8. If you have to build it yourself:
 
 ```bash
-hexxcoin_ROOT=$(pwd)
+GravityCoin_ROOT=$(pwd)
 
 # Pick some path to install BDB to, here we create a directory within the bitcoin directory
-BDB_PREFIX="${hexxcoin_ROOT}/db4"
+BDB_PREFIX="${GravityCoin_ROOT}/db4"
 mkdir -p $BDB_PREFIX
 
 # Fetch the source and verify that it is not tampered with
@@ -185,7 +185,7 @@ cd db-4.8.30.NC/build_unix/
 make install
 
 # Configure Bitcoin Core to use our own-built instance of BDB
-cd $hexxcoin_ROOT
+cd $GravityCoin_ROOT
 ./autogen.sh
 ./configure LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/" # (other args...)
 ```
@@ -203,7 +203,7 @@ If you need to build Boost yourself:
 
 Security
 --------
-To help make your hexxcoin installation more secure by making certain attacks impossible to
+To help make your GravityCoin installation more secure by making certain attacks impossible to
 exploit even if a vulnerability is found, binaries are hardened by default.
 This can be disabled with:
 
@@ -227,7 +227,7 @@ Hardening enables the following features:
 
     To test that you have built PIE executable, install scanelf, part of paxutils, and use:
 
-        scanelf -e ./hexxcoin
+        scanelf -e ./GravityCoin
 
     The output should contain:
 
@@ -236,7 +236,7 @@ Hardening enables the following features:
 
 * Non-executable Stack
     If the stack is executable then trivial stack based buffer overflow exploits are possible if
-    vulnerable buffers are found. By default, hexxcoin should be built with a non-executable stack
+    vulnerable buffers are found. By default, GravityCoin should be built with a non-executable stack
     but if one of the libraries it uses asks for an executable stack or someone makes a mistake
     and uses a compiler extension which requires an executable stack, it will silently build an
     executable without the non-executable stack protection.

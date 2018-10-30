@@ -242,12 +242,6 @@ void Shutdown() {
     GenerateBitcoins(false, 0, Params());
     StopNode();
 
-    // STORE DATA CACHES INTO SERIALIZED DAT FILES
-    CFlatDB<CXnodePayments> flatdb2("xnpayments.dat", "magicXnodePaymentsCache");
-    flatdb2.Dump(mnpayments);
-    CFlatDB<CNetFulfilledRequestManager> flatdb4("netfulfilled.dat", "magicFulfilledCache");
-    flatdb4.Dump(netfulfilledman);
-
     StopTorControl();
     UnregisterNodeSignals(GetNodeSignals());
 
@@ -1037,7 +1031,7 @@ void InitLogging() {
     fLogIPs = GetBoolArg("-logips", DEFAULT_LOGIPS);
 
     LogPrintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    LogPrintf("hexxcoin version %s\n", FormatFullVersion());
+    LogPrintf("GravityCoin version %s\n", FormatFullVersion());
 }
 
 /** Initialize bitcoin.
@@ -1906,25 +1900,8 @@ bool AppInit2(boost::thread_group &threadGroup, CScheduler &scheduler) {
 
     darkSendPool.InitDenominations();
 
-    // ********************************************************* Step 11b: Load cache data
-
-    // LOAD SERIALIZED DAT FILES INTO DATA CACHES FOR INTERNAL USE
-
-    if (mnodeman.size()) {
-        uiInterface.InitMessage(_("Loading Xnode payment cache..."));
-        CFlatDB<CXnodePayments> flatdb2("xnpayments.dat", "magicXnodePaymentsCache");
-        if (!flatdb2.Load(mnpayments)) {
-            return InitError("Failed to load xnode payments cache from xnpayments.dat");
-        }
-    } else {
-        uiInterface.InitMessage(_("Xnode cache is empty, skipping payments and governance cache..."));
-    }
-
-    uiInterface.InitMessage(_("Loading fulfilled requests cache..."));
     CFlatDB<CNetFulfilledRequestManager> flatdb4("netfulfilled.dat", "magicFulfilledCache");
-    if (!flatdb4.Load(netfulfilledman)) {
-        return InitError("Failed to load fulfilled requests cache from netfulfilled.dat");
-    }
+    flatdb4.Load(netfulfilledman);
 
     // ********************************************************* Step 11c: update block tip in Dash modules
 

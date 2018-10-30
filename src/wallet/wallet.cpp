@@ -2243,7 +2243,7 @@ bool CWallet::GetVinAndKeysFromOutput(COutput out, CTxIn &txinRet, CPubKey &pubK
     return true;
 }
 
-//[hexxcoin]
+//[GravityCoin]
 void CWallet::ListAvailableCoinsMintCoins(vector <COutput> &vCoins, bool fOnlyConfirmed) const {
     vCoins.clear();
     {
@@ -2625,10 +2625,10 @@ bool CWallet::SelectCoinsByDenominations(int nDenom, CAmount nValueMin, CAmount 
     std::random_shuffle(vCoins.rbegin(), vCoins.rend(), GetRandInt);
 
     // ( bit on if present )
-    // bit 0 - 100hexxcoin+1
-    // bit 1 - 10hexxcoin+1
-    // bit 2 - 1hexxcoin+1
-    // bit 3 - .1hexxcoin+1
+    // bit 0 - 100GravityCoin+1
+    // bit 1 - 10GravityCoin+1
+    // bit 2 - 1GravityCoin+1
+    // bit 3 - .1GravityCoin+1
 
     std::vector<int> vecBits;
     if (!darkSendPool.GetDenominationsBits(nDenom, vecBits)) {
@@ -2894,9 +2894,9 @@ bool CWallet::CreateTransaction(const vector <CRecipient> &vecSend, CWalletTx &w
                 CAmount nValueIn = 0;
                 if (!SelectCoins(vAvailableCoins, nValueToSelect, setCoins, nValueIn, coinControl)) {
                     if (nCoinType == ONLY_NOT1000IFMN) {
-                        strFailReason = _("Unable to locate enough funds for this transaction that are not equal 2000 HXX.");
+                        strFailReason = _("Unable to locate enough funds for this transaction that are not equal 2000 GXX.");
                     } else if (nCoinType == ONLY_NONDENOMINATED_NOT1000IFMN) {
-                        strFailReason = _("Unable to locate enough PrivateSend non-denominated funds for this transaction that are not equal 2000 HXX.");
+                        strFailReason = _("Unable to locate enough PrivateSend non-denominated funds for this transaction that are not equal 2000 GXX.");
                     } else if (nCoinType == ONLY_DENOMINATED) {
                         strFailReason = _("Unable to locate enough PrivateSend denominated funds for this transaction.");
                         strFailReason += _("PrivateSend uses exact denominated amounts to send funds, you might simply need to anonymize some more coins.");
@@ -3561,7 +3561,7 @@ bool CWallet::CreateZerocoinMintTransaction(const vector <CRecipient> &vecSend, 
                         break;
                 }
                 int64_t nPayFee = payTxFee.GetFeePerK() * (1 + (int64_t) GetTransactionWeight(txNew) / 1000);
-//                bool fAllowFree = false;					// No free TXs in HXX
+//                bool fAllowFree = false;					// No free TXs in GXX
                 int64_t nMinFee = wtxNew.GetMinFee(1, false, GMF_SEND);
 
                 int64_t nFeeNeeded = nPayFee;
@@ -3668,10 +3668,10 @@ bool CWallet::CreateZerocoinSpendTransaction(std::string &thirdPartyaddress, int
 
             	CBitcoinAddress address(thirdPartyaddress);
             	if (!address.IsValid()){
-            		strFailReason = _("Invalid hexxcoin address");
+            		strFailReason = _("Invalid GravityCoin address");
             		return false;
             	}
-            	// Parse hexxcoin address
+            	// Parse GravityCoin address
             	scriptChange = GetScriptForDestination(CBitcoinAddress(thirdPartyaddress).Get());
             }
 
@@ -4835,7 +4835,7 @@ bool CWallet::InitLoadWallet() {
         else if (nLoadWalletRet == DB_NONCRITICAL_ERROR) {
             InitWarning(strprintf(_("Error reading %s! All keys read correctly, but transaction data"
                                             " or address book entries might be missing or incorrect."),
-                                  walletFile));
+                                            walletFile));
         } else if (nLoadWalletRet == DB_TOO_NEW)
             return InitError(strprintf(_("Error loading %s: Wallet requires newer version of %s"),
                                        walletFile, _(PACKAGE_NAME)));

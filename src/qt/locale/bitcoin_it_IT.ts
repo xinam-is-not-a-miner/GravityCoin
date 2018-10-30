@@ -76,7 +76,7 @@
     </message>
 </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     <message>
         <source>&amp;Transactions</source>
         <translation>Transazioni</translation>
@@ -180,6 +180,6 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     </context>
 </TS>

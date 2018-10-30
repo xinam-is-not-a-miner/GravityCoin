@@ -76,7 +76,7 @@
     </message>
 </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Chứ ký &amp; Tin nhắn...</translation>
@@ -166,8 +166,8 @@
         <translation>Đánh chỉ số (indexing) lại các khối (blocks) trên ổ đĩa ...</translation>
     </message>
     <message>
-        <source>Send coins to a hexxcoin address</source>
-        <translation>Gửi coins đến tài khoản hexxcoin</translation>
+        <source>Send coins to a GravityCoin address</source>
+        <translation>Gửi coins đến tài khoản GravityCoin</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -186,8 +186,8 @@
         <translation>&amp;Tin nhắn xác thực</translation>
     </message>
     <message>
-        <source>hexxcoin</source>
-        <translation>hexxcoin</translation>
+        <source>GravityCoin</source>
+        <translation>GravityCoin</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -214,12 +214,12 @@
         <translation>Mã hoá các khoá bí mật trong Ví của bạn.</translation>
     </message>
     <message>
-        <source>Sign messages with your hexxcoin addresses to prove you own them</source>
-        <translation>Dùng địa chỉ hexxcoin của bạn ký các tin nhắn để xác minh những nội dung tin nhắn đó là của bạn.</translation>
+        <source>Sign messages with your GravityCoin addresses to prove you own them</source>
+        <translation>Dùng địa chỉ GravityCoin của bạn ký các tin nhắn để xác minh những nội dung tin nhắn đó là của bạn.</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified hexxcoin addresses</source>
-        <translation>Kiểm tra các tin nhắn để chắc chắn rằng chúng được ký bằng các địa chỉ hexxcoin xác định.</translation>
+        <source>Verify messages to ensure they were signed with specified GravityCoin addresses</source>
+        <translation>Kiểm tra các tin nhắn để chắc chắn rằng chúng được ký bằng các địa chỉ GravityCoin xác định.</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -238,8 +238,8 @@
         <translation>Thanh công cụ (toolbar)</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and hexxcoin: URIs)</source>
-        <translation>Yêu cầu thanh toán(tạo mã QR và địa chỉ hexxcoin: URLs)</translation>
+        <source>Request payments (generates QR codes and GravityCoin: URIs)</source>
+        <translation>Yêu cầu thanh toán(tạo mã QR và địa chỉ GravityCoin: URLs)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -250,8 +250,8 @@
         <translation>Hiện thỉ danh sách các địa chỉ và nhãn đã dùng để nhận.</translation>
     </message>
     <message>
-        <source>Open a hexxcoin: URI or payment request</source>
-        <translation>Mở hexxcoin:URL hoặc yêu cầu thanh toán</translation>
+        <source>Open a GravityCoin: URI or payment request</source>
+        <translation>Mở GravityCoin:URL hoặc yêu cầu thanh toán</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -533,8 +533,8 @@
         <translation>Ví</translation>
     </message>
     <message>
-        <source>Connect to the hexxcoin network through a SOCKS5 proxy.</source>
-        <translation>Kết nối đến máy chủ hexxcoin thông qua SOCKS5 proxy.</translation>
+        <source>Connect to the GravityCoin network through a SOCKS5 proxy.</source>
+        <translation>Kết nối đến máy chủ GravityCoin thông qua SOCKS5 proxy.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -1002,14 +1002,14 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     <message>
         <source>Options:</source>
         <translation>Lựa chọn:</translation>
     </message>
     <message>
-        <source>hexxcoin core</source>
-        <translation>hexxcoin core</translation>
+        <source>GravityCoin Core</source>
+        <translation>GravityCoin Core</translation>
     </message>
     <message>
         <source>(default: %u)</source>

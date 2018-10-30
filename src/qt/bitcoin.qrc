@@ -1,6 +1,9 @@
 <!DOCTYPE RCC><RCC version="1.0">
     <qresource prefix="/icons">
-        <file alias="bitcoin">res/icons/hexxcoin.png</file>
+        <file alias="bitcoin">res/icons/GravityCoin.png</file>
+        <file alias="wallet_bg1">res/icons/wallet_bg.png</file>
+        <file alias="about2">res/icons/about2.png</file>
+        <file alias="splash">res/icons/splash.png</file>
         <file alias="address-book">res/icons/address-book.png</file>
         <file alias="quit">res/icons/quit.png</file>
         <file alias="send">res/icons/send.png</file>
@@ -53,6 +56,9 @@
         <file alias="fontsmaller">res/icons/fontsmaller.png</file>
         <file alias="prompticon">res/icons/chevron.png</file>
         <file alias="transaction_abandoned">res/icons/transaction_abandoned.png</file>
+    </qresource>
+    <qresource prefix="/css">
+        <file alias="light">res/css/light.css</file>
     </qresource>
     <qresource prefix="/movies">
         <file alias="spinner-000">res/movies/spinner-000.png</file>

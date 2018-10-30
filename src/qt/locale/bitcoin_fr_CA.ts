@@ -36,7 +36,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     </context>
 <context>
     <name>CoinControlDialog</name>
@@ -148,6 +148,6 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     </context>
 </TS>

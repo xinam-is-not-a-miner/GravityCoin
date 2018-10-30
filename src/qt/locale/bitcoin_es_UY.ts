@@ -56,7 +56,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     <message>
         <source>Synchronizing with network...</source>
         <translation>Sincronizando con la red...</translation>
@@ -110,16 +110,16 @@
         <translation>Recibiendo direcciones</translation>
     </message>
     <message>
-        <source>Send coins to a hexxcoin address</source>
-        <translation>Enviar monedas a una dirección hexxcoin</translation>
+        <source>Send coins to a GravityCoin address</source>
+        <translation>Enviar monedas a una dirección GravityCoin</translation>
     </message>
     <message>
         <source>Change the passphrase used for wallet encryption</source>
         <translation>Cambie la clave utilizada para el cifrado del monedero</translation>
     </message>
     <message>
-        <source>hexxcoin</source>
-        <translation>hexxcoin</translation>
+        <source>GravityCoin</source>
+        <translation>GravityCoin</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -439,7 +439,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     <message>
         <source>Options:</source>
         <translation>Opciones:</translation>

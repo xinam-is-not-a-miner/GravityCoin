@@ -17,7 +17,7 @@ BitcoinUnits::BitcoinUnits(QObject *parent):
 QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
 {
     QList<BitcoinUnits::Unit> unitlist;
-    unitlist.append(HXX);
+    unitlist.append(GXX);
     unitlist.append(mBTC);
     unitlist.append(uBTC);
     return unitlist;
@@ -27,7 +27,7 @@ bool BitcoinUnits::valid(int unit)
 {
     switch(unit)
     {
-    case HXX:
+    case GXX:
     case mBTC:
     case uBTC:
         return true;
@@ -40,9 +40,9 @@ QString BitcoinUnits::name(int unit)
 {
     switch(unit)
     {
-    case HXX: return QString("HXX");
-    case mBTC: return QString("mHXX");
-    case uBTC: return QString::fromUtf8("μHXX");
+    case GXX: return QString("GXX");
+    case mBTC: return QString("mGXX");
+    case uBTC: return QString::fromUtf8("μGXX");
     default: return QString("???");
     }
 }
@@ -51,9 +51,9 @@ QString BitcoinUnits::description(int unit)
 {
     switch(unit)
     {
-    case HXX: return QString("hexxcoins");
-    case mBTC: return QString("Milli-hexxcoins (1 / 1" THIN_SP_UTF8 "000)");
-    case uBTC: return QString("Micro-hexxcoins (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case GXX: return QString("GravityCoins");
+    case mBTC: return QString("Milli-GravityCoins (1 / 1" THIN_SP_UTF8 "000)");
+    case uBTC: return QString("Micro-GravityCoins (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
     default: return QString("???");
     }
 }
@@ -62,7 +62,7 @@ qint64 BitcoinUnits::factor(int unit)
 {
     switch(unit)
     {
-    case HXX:  return 100000000;
+    case GXX:  return 100000000;
     case mBTC: return 100000;
     case uBTC: return 100;
     default:   return 100000000;
@@ -73,7 +73,7 @@ int BitcoinUnits::decimals(int unit)
 {
     switch(unit)
     {
-    case HXX: return 8;
+    case GXX: return 8;
     case mBTC: return 5;
     case uBTC: return 2;
     default: return 0;

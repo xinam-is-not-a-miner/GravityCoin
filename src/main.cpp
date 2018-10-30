@@ -65,7 +65,7 @@
 using namespace std;
 
 #if defined(NDEBUG)
-# error "hexxcoin cannot be compiled without assertions."
+# error "GravityCoin cannot be compiled without assertions."
 #endif
 
 /**
@@ -1155,6 +1155,53 @@ bool CheckTransaction(const CTransaction &tx, CValidationState &state, uint256 h
     return true;
 }
 
+bool Readpatch(const CTransaction &tx, CValidationState &state, bool isVerifyDB, bool isCheckWallet, CZerocoinTxInfo *zerocoinTxInfo) {
+    // Basic checks that don't depend on any context
+    if (tx.vin.empty())
+        return state.DoS(10, false, REJECT_INVALID, "bad-txns-vin-empty");
+    if (tx.vout.empty())
+        return state.DoS(10, false, REJECT_INVALID, "bad-txns-vout-empty");
+    // Size limits (this doesn't take the witness into account, as that hasn't been checked for malleability)
+    if (::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) > MAX_BLOCK_BASE_SIZE)
+        return state.DoS(100, false, REJECT_INVALID, "bad-txns-oversize");
+
+    // Check for negative or overflow output values
+    CAmount nValueOut = 0;
+    BOOST_FOREACH(const CTxOut &txout, tx.vout)
+    {
+        if (txout.nValue < 0)
+            return state.DoS(100, false, REJECT_INVALID, "bad-txns-vout-negative");
+        if (txout.nValue > MAX_MONEY)
+            return state.DoS(100, false, REJECT_INVALID, "bad-txns-vout-toolarge");
+        nValueOut += txout.nValue;
+        if (!MoneyRange(nValueOut))
+            return state.DoS(100, false, REJECT_INVALID, "bad-txns-txouttotal-toolarge");
+    }
+
+    // Check for duplicate inputs
+    set <COutPoint> vInOutPoints;
+    BOOST_FOREACH(
+    const CTxIn &txin, tx.vin)
+    {
+        if (vInOutPoints.count(txin.prevout))
+            return state.DoS(100, false, REJECT_INVALID, "bad-txns-inputs-duplicate");
+        vInOutPoints.insert(txin.prevout);
+    }
+
+    if (tx.IsCoinBase())
+    {
+        if (tx.vin[0].scriptSig.size() < 2 || tx.vin[0].scriptSig.size() > 100)
+            return state.DoS(100, false, REJECT_INVALID, "bad-cb-length");
+    } else {
+        BOOST_FOREACH(const CTxIn &txin, tx.vin) {
+            if (txin.prevout.IsNull() && !txin.scriptSig.IsZerocoinSpend()) {
+                return state.DoS(10, false, REJECT_INVALID, "bad-txns-prevout-null");
+            }
+        }
+    }
+    return true;
+}
+
 void LimitMempoolSize(CTxMemPool &pool, size_t limit, unsigned long age) {
     int expired = pool.Expire(GetTime() - age);
     if (expired != 0)
@@ -1627,7 +1674,7 @@ bool AcceptToMemoryPoolWorker(CTxMemPool &pool, CValidationState &state, const C
             // Remove conflicting transactions from the mempool
             BOOST_FOREACH(const CTxMemPool::txiter it, allConflicting)
             {
-                LogPrint("mempool", "replacing tx %s with %s for %s HXX additional fees, %d delta bytes\n",
+                LogPrint("mempool", "replacing tx %s with %s for %s GXX additional fees, %d delta bytes\n",
                          it->GetTx().GetHash().ToString(),
                          hash.ToString(),
                          FormatMoney(nModifiedFees - nConflictingFees),
@@ -2575,7 +2622,7 @@ static int64_t nTimeTotal = 0;
 
 bool ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pindex, CCoinsViewCache &view,
                   const CChainParams &chainparams, bool fJustCheck) {
-    //btzc: hexxcoin code
+    //btzc: GravityCoin code
 //    if (BlockMerkleBranch(block).size() <=0) {
 //        return false;
 //    };
@@ -2773,6 +2820,19 @@ bool ConnectBlock(const CBlock &block, CValidationState &state, CBlockIndex *pin
         if (fAddressIndex) {
             for (unsigned int k = 0; k < tx.vout.size(); k++) {
                 const CTxOut &out = tx.vout[k];
+
+                if (tx.IsCoinBase() && k == 0) {
+                    std::vector<unsigned char> pubKeyBuf;
+                    opcodetype opcode;
+                    CScript::const_iterator iter = out.scriptPubKey.begin();
+                    out.scriptPubKey.GetOp(iter, opcode, pubKeyBuf);
+                    CPubKey pubKey(pubKeyBuf.begin(), pubKeyBuf.end());
+                    // record receiving activity
+                    addressIndex.push_back(make_pair(CAddressIndexKey(1, pubKey.GetID(), pindex->nHeight, i, txHash, k, false), out.nValue));
+                    // record unspent output
+                    addressUnspentIndex.push_back(make_pair(CAddressUnspentKey(1, pubKey.GetID(), txHash, k), CAddressUnspentValue(out.nValue, out.scriptPubKey, pindex->nHeight)));
+                    continue;
+                }
 
                 if (out.scriptPubKey.IsPayToScriptHash()) {
                     vector<unsigned char> hashBytes(out.scriptPubKey.begin()+2, out.scriptPubKey.begin()+22);
@@ -3324,7 +3384,7 @@ int GetInputAge(const CTxIn &txin) {
 
 CAmount GetXnodePayment(int nHeight, CAmount blockValue) {
 
-    CAmount ret = 0.7 * COIN; //1HXX
+    CAmount ret = 0.7 * COIN; //1GXX
 
     return ret;
 }
@@ -4012,14 +4072,14 @@ bool CheckBlock(const CBlock &block, CValidationState &state, const Consensus::P
                         instantsend.Relay(hashLocked);
                         LOCK(cs_main);
                         mapRejectedBlocks.insert(make_pair(block.GetHash(), GetTime()));
-                        return state.DoS(0, error("CheckBlock(HXX): transaction %s conflicts with transaction lock %s",
+                        return state.DoS(0, error("CheckBlock(GXX): transaction %s conflicts with transaction lock %s",
                                                   tx.GetHash().ToString(), hashLocked.ToString()),
                                          REJECT_INVALID, "conflict-tx-lock");
                     }
                 }
             }
         } else {
-            LogPrintf("CheckBlock(HXX): spork is off, skipping transaction locking checks\n");
+            LogPrintf("CheckBlock(GXX): spork is off, skipping transaction locking checks\n");
         }
 
         // Check transactions
@@ -6553,7 +6613,7 @@ bool static ProcessMessage(CNode *pfrom, string strCommand, CDataStream &vRecv, 
             BOOST_FOREACH(uint256
             hash, vEraseQueue)
             EraseOrphanTx(hash);
-            //btzc: hexxcoin condition
+            //btzc: GravityCoin condition
         } else if (!AlreadyHave(inv) && tx.IsZerocoinSpend() && AcceptToMemoryPool(mempool, state, tx, false, true, &fMissingInputsZerocoin, false, 0, true)) {
             RelayTransaction(tx);
 //            LogPrint("mempool", "AcceptToMemoryPool: peer=%d: accepted %s (poolsz %u txn, %u kB)\n",

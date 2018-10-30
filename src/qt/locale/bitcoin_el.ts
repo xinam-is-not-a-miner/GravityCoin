@@ -28,7 +28,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     <message>
         <source>Quit application</source>
         <translation>Κλείσιμο εφαρμογής</translation>
@@ -184,7 +184,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     <message>
         <source>Insufficient funds</source>
         <translation>Κεφάλαια μη επαρκή</translation>

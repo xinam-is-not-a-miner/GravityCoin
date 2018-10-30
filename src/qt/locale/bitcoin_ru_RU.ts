@@ -56,10 +56,10 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     <message>
-        <source>hexxcoin</source>
-        <translation>hexxcoin core</translation>
+        <source>GravityCoin</source>
+        <translation>GravityCoin Core</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -216,14 +216,14 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     <message>
-        <source>hexxcoin core</source>
-        <translation>hexxcoin core</translation>
+        <source>GravityCoin Core</source>
+        <translation>GravityCoin Core</translation>
     </message>
     <message>
         <source>Whitelisted peers cannot be DoS banned and their transactions are always relayed, even if they are already in the mempool, useful e.g. for a gateway</source>
-        <translation>hexxcoin-core</translation>
+        <translation>GravityCoin-core</translation>
     </message>
     <message>
         <source>Information</source>

@@ -22,9 +22,9 @@ elif [[ $HOST = "x86_64-apple-darwin11" ]]; then
     ARCHIVE_NAME="osx-x64.zip"
 fi
 
-cp $TRAVIS_BUILD_DIR/src/qt/hexxcoin-qt $OUTDIR/bin/ || cp $TRAVIS_BUILD_DIR/src/qt/hexxcoin-qt.exe $OUTDIR/bin/ || echo "no QT Wallet"
-cp $TRAVIS_BUILD_DIR/src/hexxcoind $OUTDIR/bin/ || cp $TRAVIS_BUILD_DIR/src/hexxcoind.exe $OUTDIR/bin/
-cp $TRAVIS_BUILD_DIR/src/hexxcoin-cli $OUTDIR/bin/ || cp $TRAVIS_BUILD_DIR/src/hexxcoin-cli.exe $OUTDIR/bin/
+cp $TRAVIS_BUILD_DIR/src/qt/GravityCoin-qt $OUTDIR/bin/ || cp $TRAVIS_BUILD_DIR/src/qt/GravityCoin-qt.exe $OUTDIR/bin/ || echo "no QT Wallet"
+cp $TRAVIS_BUILD_DIR/src/GravityCoind $OUTDIR/bin/ || cp $TRAVIS_BUILD_DIR/src/GravityCoind.exe $OUTDIR/bin/
+cp $TRAVIS_BUILD_DIR/src/GravityCoin-cli $OUTDIR/bin/ || cp $TRAVIS_BUILD_DIR/src/GravityCoin-cli.exe $OUTDIR/bin/
 strip "$OUTDIR/bin"/* || echo "nothing to strip"
 ls -lah $OUTDIR/bin
 

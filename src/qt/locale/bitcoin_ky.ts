@@ -20,7 +20,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     <message>
         <source>&amp;Transactions</source>
         <translation>&amp;Транзакциялар</translation>
@@ -30,8 +30,8 @@
         <translation>Билдирүүнү &amp;текшерүү...</translation>
     </message>
     <message>
-        <source>hexxcoin</source>
-        <translation>hexxcoin</translation>
+        <source>GravityCoin</source>
+        <translation>GravityCoin</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -264,7 +264,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     <message>
         <source>Information</source>
         <translation>Маалымат</translation>

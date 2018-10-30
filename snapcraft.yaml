@@ -1,21 +1,21 @@
 name: xnode
 version: "0.0.1"
-summary: Xnode for hexxcoin project
+summary: Xnode for GravityCoin project
 description: |
  Xnodes verify transaction and are used as second layer on top of the normal nodes.
- Xnodes must have access to 1000HXX at a specific address to play the role of Xnode otherwise they are just degraded to a regular node on the network.
+ Xnodes must have access to 1000GXX at a specific address to play the role of Xnode otherwise they are just degraded to a regular node on the network.
 
 confinement: strict
 grade: stable
 
 apps:
  cli:
-  command: bin/hexxcoin-cli
+  command: bin/GravityCoin-cli
   plugs:
     - network
     - home
  daemon:
-  command: bin/hexxcoind
+  command: bin/GravityCoind
   plugs:
     - network
     - network-bind
@@ -45,5 +45,5 @@ parts:
   after: [libboost]
   plugin: autotools
   configflags: [--without-gui]
-  source: https://github.com/hexxcointakeover/hexxcoin.git
+  source: https://github.com/GravityCointakeover/GravityCoin.git
   source-branch: master

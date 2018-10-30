@@ -375,7 +375,7 @@ void CBlockPolicyEstimator::processTransaction(const CTxMemPoolEntry& entry, boo
         return;
     }
 
-    // Fees are stored and reported as HXX-per-kb:
+    // Fees are stored and reported as GXX-per-kb:
     CFeeRate feeRate(entry.GetFee(), entry.GetTxSize());
 
     // Want the priority of the tx at confirmation. However we don't know
@@ -384,7 +384,7 @@ void CBlockPolicyEstimator::processTransaction(const CTxMemPoolEntry& entry, boo
     //double curPri = entry.GetPriority(txHeight);
     mapMemPoolTxs[hash].blockHeight = txHeight;
 
-    LogPrint("estimatefee", "entry.GetFee()=%s HXX\n", entry.GetFee()/100000000);
+    LogPrint("estimatefee", "entry.GetFee()=%s GXX\n", entry.GetFee()/100000000);
     // Record this as a priority estimate
 //    if (entry.GetFee() == 0 || isPriDataPoint(feeRate, c) {
     if (entry.GetFee() == 0) {
@@ -423,7 +423,7 @@ void CBlockPolicyEstimator::processBlockTx(unsigned int nBlockHeight, const CTxM
         return;
     }
 
-    // Fees are stored and reported as HXX-per-kb:
+    // Fees are stored and reported as GXX-per-kb:
     CFeeRate feeRate(entry.GetFee(), entry.GetTxSize());
 
     // Want the priority of the tx at confirmation.  The priority when it

@@ -40,7 +40,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     <message>
         <source>Synchronizing with network...</source>
         <translation>Sinchroniseer met die netwerk ...</translation>
@@ -78,8 +78,8 @@
         <translation>&amp;Opsies</translation>
     </message>
     <message>
-        <source>hexxcoin</source>
-        <translation>hexxcoin</translation>
+        <source>GravityCoin</source>
+        <translation>GravityCoin</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -316,7 +316,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     <message>
         <source>Options:</source>
         <translation>Opsies:</translation>

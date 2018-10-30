@@ -10,14 +10,14 @@
 #include "utilstrencodings.h"
 
 /** Fees smaller than this (in ztoshi) are considered zero fee (for transaction creation) */
-int64_t CTransaction::nMinTxFee = 1000000; // 0.01 HXX
+int64_t CTransaction::nMinTxFee = 1000000; // 0.01 GXX
 /** Fees smaller than this (in ztoshi) are considered zero fee (for relaying) */
-int64_t CTransaction::nMinRelayTxFee = 1000000; // 0.01 HXX
+int64_t CTransaction::nMinRelayTxFee = 1000000; // 0.01 GXX
 
 /** Default for -blockprioritysize, maximum space for zero/low-fee transactions **/
 static const unsigned int DEFAULT_BLOCK_PRIORITY_SIZE = 50000; // 50KB
 /** Dust Soft Limit, allowed with additional fee per output */
-static const int64_t DUST_SOFT_LIMIT = 100000; // 0.001 HXX
+static const int64_t DUST_SOFT_LIMIT = 100000; // 0.001 GXX
 static const unsigned int MAX_BLOCK_SIZE = 4000000;                      // 4000KB block hard limit
 /** Obsolete: maximum size for mined blocks */
 static const unsigned int MAX_BLOCK_SIZE_GEN = MAX_BLOCK_SIZE/4;         // 1000KB  block soft limit
@@ -127,7 +127,7 @@ int64_t CTransaction::GetMinFee(unsigned int nBlockSize, bool fAllowFree, enum G
             nMinFee = 0;
     }
 
-    // hexxcoin
+    // GravityCoin
     // To limit dust spam, add nBaseFee for each output less than DUST_SOFT_LIMIT
     for (unsigned int i = 0; i < vout.size(); i++)
         if (vout[i].nValue < DUST_SOFT_LIMIT) {

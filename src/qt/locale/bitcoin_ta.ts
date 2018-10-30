@@ -52,7 +52,7 @@
     </message>
     </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     <message>
         <source>&amp;Overview</source>
         <translation>&amp;கண்ணோட்டம்</translation>
@@ -90,8 +90,8 @@
         <translation>&amp;செய்தியை சரிசெய்...</translation>
     </message>
     <message>
-        <source>hexxcoin</source>
-        <translation>hexxcoin</translation>
+        <source>GravityCoin</source>
+        <translation>GravityCoin</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -712,10 +712,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     <message>
-        <source>hexxcoin core</source>
-        <translation>hexxcoin மையம்</translation>
+        <source>GravityCoin Core</source>
+        <translation>GravityCoin மையம்</translation>
     </message>
     <message>
         <source>(default: %u)</source>

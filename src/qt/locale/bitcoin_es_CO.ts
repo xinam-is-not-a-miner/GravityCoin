@@ -64,7 +64,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     <message>
         <source>Synchronizing with network...</source>
         <translation>Sincronizando con la red...</translation>
@@ -126,8 +126,8 @@
         <translation>Abrir &amp;URL...</translation>
     </message>
     <message>
-        <source>Send coins to a hexxcoin address</source>
-        <translation>Enviando monedas a una dirección de hexxcoin</translation>
+        <source>Send coins to a GravityCoin address</source>
+        <translation>Enviando monedas a una dirección de GravityCoin</translation>
     </message>
     <message>
         <source>Change the passphrase used for wallet encryption</source>
@@ -146,8 +146,8 @@
         <translation>&amp;Verificar Mensaje...</translation>
     </message>
     <message>
-        <source>hexxcoin</source>
-        <translation>hexxcoin</translation>
+        <source>GravityCoin</source>
+        <translation>GravityCoin</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -288,10 +288,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     <message>
-        <source>hexxcoin core</source>
-        <translation>hexxcoin core</translation>
+        <source>GravityCoin Core</source>
+        <translation>GravityCoin Core</translation>
     </message>
     <message>
         <source>Insufficient funds</source>

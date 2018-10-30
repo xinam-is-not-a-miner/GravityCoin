@@ -17,13 +17,13 @@ function clean_up {
    done
 }
 
-WORKINGDIR="/tmp/hexxcoin"
+WORKINGDIR="/tmp/GravityCoin"
 TMPFILE="hashes.tmp"
 
 SIGNATUREFILENAME="SHA256SUMS.asc"
 RCSUBDIR="test/"
 BASEDIR="https://bitcoin.org/bin/"
-VERSIONPREFIX="hexxcoin-core-"
+VERSIONPREFIX="GravityCoin-core-"
 RCVERSIONSTRING="rc"
 
 if [ ! -d "$WORKINGDIR" ]; then

@@ -212,7 +212,7 @@ public:
     bool IsDust(const CFeeRate &minRelayTxFee) const
     {
 //        return (nValue < GetDustThreshold(minRelayTxFee));
-        //hexxcoin: disable dust
+        //GravityCoin: disable dust
         return false;
     }
 

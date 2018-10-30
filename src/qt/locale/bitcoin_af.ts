@@ -72,7 +72,7 @@
     </message>
 </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     <message>
         <source>Synchronizing with network...</source>
         <translation>Netwerk-sinkronisasie...</translation>
@@ -158,8 +158,8 @@
         <translation>Besig met herindeksering van blokke op hardeskyf...</translation>
     </message>
     <message>
-        <source>Send coins to a hexxcoin address</source>
-        <translation>Stuur munte na 'n hexxcoin adres</translation>
+        <source>Send coins to a GravityCoin address</source>
+        <translation>Stuur munte na 'n GravityCoin adres</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -170,8 +170,8 @@
         <translation>Verander die wagwoord wat ek vir kodifikasie van my beursie gebruik</translation>
     </message>
     <message>
-        <source>hexxcoin</source>
-        <translation>hexxcoin</translation>
+        <source>GravityCoin</source>
+        <translation>GravityCoin</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -194,12 +194,12 @@
         <translation>Kodifiseer die private sleutes wat aan jou beursie gekoppel is.</translation>
     </message>
     <message>
-        <source>Sign messages with your hexxcoin addresses to prove you own them</source>
-        <translation>Onderteken boodskappe met u hexxcoin adresse om u eienaarskap te bewys</translation>
+        <source>Sign messages with your GravityCoin addresses to prove you own them</source>
+        <translation>Onderteken boodskappe met u GravityCoin adresse om u eienaarskap te bewys</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified hexxcoin addresses</source>
-        <translation>Verifieër boodskappe om seker te maak dat dit met die gespesifiseerde hexxcoin adresse</translation>
+        <source>Verify messages to ensure they were signed with specified GravityCoin addresses</source>
+        <translation>Verifieër boodskappe om seker te maak dat dit met die gespesifiseerde GravityCoin adresse</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -210,8 +210,8 @@
         <translation>Orebalk</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and hexxcoin: URIs)</source>
-        <translation>Versoek betalings (genereer QR-kodes en hexxcoin: URI's)</translation>
+        <source>Request payments (generates QR codes and GravityCoin: URIs)</source>
+        <translation>Versoek betalings (genereer QR-kodes en GravityCoin: URI's)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -222,8 +222,8 @@
         <translation>Vertoon die lys van gebruikte ontvangers-adresse en etikette</translation>
     </message>
     <message>
-        <source>Open a hexxcoin: URI or payment request</source>
-        <translation>Skep 'n hexxcoin: URI of betalingsversoek</translation>
+        <source>Open a GravityCoin: URI or payment request</source>
+        <translation>Skep 'n GravityCoin: URI of betalingsversoek</translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -708,10 +708,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     <message>
-        <source>hexxcoin core</source>
-        <translation>hexxcoin Kern</translation>
+        <source>GravityCoin Core</source>
+        <translation>GravityCoin Kern</translation>
     </message>
     <message>
         <source>Information</source>

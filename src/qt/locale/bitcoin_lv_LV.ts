@@ -64,7 +64,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Parakstīt &amp;ziņojumu...</translation>
@@ -142,8 +142,8 @@
         <translation>Bloku reindeksēšana no diska...</translation>
     </message>
     <message>
-        <source>Send coins to a hexxcoin address</source>
-        <translation>Nosūtīt bitkoinus uz hexxcoin adresi</translation>
+        <source>Send coins to a GravityCoin address</source>
+        <translation>Nosūtīt bitkoinus uz GravityCoin adresi</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -166,8 +166,8 @@
         <translation>&amp;Pārbaudīt ziņojumu...</translation>
     </message>
     <message>
-        <source>hexxcoin</source>
-        <translation>hexxcoin</translation>
+        <source>GravityCoin</source>
+        <translation>GravityCoin</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -194,12 +194,12 @@
         <translation>Šifrēt privātās atslēgas kuras pieder tavam maciņam</translation>
     </message>
     <message>
-        <source>Sign messages with your hexxcoin addresses to prove you own them</source>
-        <translation>Parakstīt ziņojumus ar savām hexxcoin adresēm lai pierādītu ka tās pieder tev</translation>
+        <source>Sign messages with your GravityCoin addresses to prove you own them</source>
+        <translation>Parakstīt ziņojumus ar savām GravityCoin adresēm lai pierādītu ka tās pieder tev</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified hexxcoin addresses</source>
-        <translation>Pārbaudīt ziņojumus lai pārliecinātos, ka tie tika parakstīti ar norādītajām hexxcoin adresēm</translation>
+        <source>Verify messages to ensure they were signed with specified GravityCoin addresses</source>
+        <translation>Pārbaudīt ziņojumus lai pārliecinātos, ka tie tika parakstīti ar norādītajām GravityCoin adresēm</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -218,12 +218,12 @@
         <translation>Ciļņu rīkjosla</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and hexxcoin: URIs)</source>
-        <translation>Pieprasīt maksājumus (izveido QR kodu un hexxcoin: URIs)</translation>
+        <source>Request payments (generates QR codes and GravityCoin: URIs)</source>
+        <translation>Pieprasīt maksājumus (izveido QR kodu un GravityCoin: URIs)</translation>
     </message>
     <message>
-        <source>Open a hexxcoin: URI or payment request</source>
-        <translation>Atvērt hexxcoin URI vai maksājuma pieprasījumu</translation>
+        <source>Open a GravityCoin: URI or payment request</source>
+        <translation>Atvērt GravityCoin URI vai maksājuma pieprasījumu</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -504,15 +504,15 @@
     </message>
     <message>
         <source>Enable coin &amp;control features</source>
-        <translation>Ieslēgt hexxcoin &amp;kontroles funkcijas</translation>
+        <translation>Ieslēgt GravityCoin &amp;kontroles funkcijas</translation>
     </message>
     <message>
         <source>&amp;Spend unconfirmed change</source>
         <translation>&amp;Tērēt neapstiprinātu atlikumu</translation>
     </message>
     <message>
-        <source>Automatically open the hexxcoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Uz rūtera automātiski atvērt hexxcoin klienta portu. Tas strādā tikai tad, ja rūteris atbalsta UPnP un tas ir ieslēgts.</translation>
+        <source>Automatically open the GravityCoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Uz rūtera automātiski atvērt GravityCoin klienta portu. Tas strādā tikai tad, ja rūteris atbalsta UPnP un tas ir ieslēgts.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -564,7 +564,7 @@
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
-        <translation>Vai rādīt hexxcoin kontroles funkcijas vai nē.</translation>
+        <translation>Vai rādīt GravityCoin kontroles funkcijas vai nē.</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -598,8 +598,8 @@
         <translation>Forma</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the hexxcoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>Attēlotā informācija var būt novecojusi. Jūsu maciņš pēc savienojuma izveides automātiski sinhronizējas ar hexxcoin tīklu, taču šis process vēl nav beidzies.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the GravityCoin network after a connection is established, but this process has not completed yet.</source>
+        <translation>Attēlotā informācija var būt novecojusi. Jūsu maciņš pēc savienojuma izveides automātiski sinhronizējas ar GravityCoin tīklu, taču šis process vēl nav beidzies.</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -850,7 +850,7 @@
     </message>
     <message>
         <source>Coin Control Features</source>
-        <translation>hexxcoin Kontroles Funkcijas</translation>
+        <translation>GravityCoin Kontroles Funkcijas</translation>
     </message>
     <message>
         <source>Inputs...</source>
@@ -1029,8 +1029,8 @@
         <translation>Kopēt parakstu uz sistēmas starpliktuvi</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this hexxcoin address</source>
-        <translation>Parakstīt ziņojumu lai pierādītu, ka esi šīs hexxcoin adreses īpašnieks.</translation>
+        <source>Sign the message to prove you own this GravityCoin address</source>
+        <translation>Parakstīt ziņojumu lai pierādītu, ka esi šīs GravityCoin adreses īpašnieks.</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -1100,7 +1100,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     <message>
         <source>Options:</source>
         <translation>Iespējas:</translation>
@@ -1126,8 +1126,8 @@
         <translation>Darbināt fonā kā servisu un pieņemt komandas</translation>
     </message>
     <message>
-        <source>hexxcoin core</source>
-        <translation>hexxcoin core</translation>
+        <source>GravityCoin Core</source>
+        <translation>GravityCoin Core</translation>
     </message>
     <message>
         <source>&lt;category&gt; can be:</source>

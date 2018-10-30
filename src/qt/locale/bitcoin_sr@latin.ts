@@ -124,7 +124,7 @@
     </message>
 </context>
 <context>
-    <name>hexxcoinGUI</name>
+    <name>GravityCoinGUI</name>
     <message>
         <source>Synchronizing with network...</source>
         <translation>Usklađivanje sa mrežom...</translation>
@@ -158,16 +158,16 @@
         <translation>Otvori &amp;URI...</translation>
     </message>
     <message>
-        <source>Send coins to a hexxcoin address</source>
-        <translation>Pošalji novčiće na hexxcoin adresu</translation>
+        <source>Send coins to a GravityCoin address</source>
+        <translation>Pošalji novčiće na GravityCoin adresu</translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>
         <translation>&amp;Proveri poruku...</translation>
     </message>
     <message>
-        <source>hexxcoin</source>
-        <translation>hexxcoin</translation>
+        <source>GravityCoin</source>
+        <translation>GravityCoin</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -410,10 +410,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>hexxcoin-core</name>
+    <name>GravityCoin-core</name>
     <message>
-        <source>hexxcoin core</source>
-        <translation>hexxcoin core</translation>
+        <source>GravityCoin Core</source>
+        <translation>GravityCoin Core</translation>
     </message>
     <message>
         <source>Information</source>

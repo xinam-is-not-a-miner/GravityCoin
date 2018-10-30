@@ -97,7 +97,7 @@ public:
                                   QString::fromStdString(strName),
                                   QString::fromStdString(address.ToString())));
             }
-            //[hexxcoin] add load pubcoin
+            //[GravityCoin] add load pubcoin
             std::list<CZerocoinEntry> listPubcoin;
             CWalletDB(wallet->strWalletFile).ListPubCoin(listPubcoin);
             BOOST_FOREACH(const CZerocoinEntry& item, listPubcoin)
@@ -167,7 +167,7 @@ public:
             break;
         }
     }
-    //[hexxcoin] updateEntry
+    //[GravityCoin] updateEntry
     void updateEntry(const QString &pubCoin, const QString &isUsed, int status)
     {
         // Find address / label in model
@@ -401,7 +401,7 @@ void AddressTableModel::updateEntry(const QString &address,
     // Update address book model from Bitcoin core
     priv->updateEntry(address, label, isMine, purpose, status);
 }
-//[hexxcoin] AddressTableModel.updateEntry()
+//[GravityCoin] AddressTableModel.updateEntry()
 void AddressTableModel::updateEntry(const QString &pubCoin, const QString &isUsed, int status)
 {
     // Update stealth address book model from Bitcoin core

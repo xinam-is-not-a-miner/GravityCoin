@@ -104,8 +104,8 @@ bool fXNode = false;
 bool fLiteMode = false;
 int nWalletBackups = 10;
 
-const char * const BITCOIN_CONF_FILENAME = "hexxcoin.conf";
-const char * const BITCOIN_PID_FILENAME = "hexxcoind.pid";
+const char * const BITCOIN_CONF_FILENAME = "GravityCoin.conf";
+const char * const BITCOIN_PID_FILENAME = "GravityCoind.pid";
 
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
@@ -442,7 +442,7 @@ static std::string FormatException(const std::exception* pex, const char* pszThr
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(NULL, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "hexxcoin";
+    const char* pszModule = "GravityCoin";
 #endif
     if (pex)
         return strprintf(
@@ -462,13 +462,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\hexxcoin
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\hexxcoin
-    // Mac: ~/Library/Application Support/hexxcoin
-    // Unix: ~/.hexxcoin
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\GravityCoin
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\GravityCoin
+    // Mac: ~/Library/Application Support/GravityCoin
+    // Unix: ~/.GravityCoin
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "hexxcoin";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "GravityCoin";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -478,10 +478,10 @@ boost::filesystem::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/hexxcoin";
+    return pathRet / "Library/Application Support/GravityCoin";
 #else
     // Unix
-    return pathRet / ".hexxcoin";
+    return pathRet / ".GravityCoin";
 #endif
 #endif
 }
@@ -585,9 +585,12 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
                         "#server=1\n"
                         "#rpcpassword=\n"
                         "#rpcusername=\n"
-                        "maxconnections=16\n"
+                        "#maxconnections=16\n"
                         "#connect=\n"
                         "#addnode=\n"
+                        "#rescan=0\n"
+                        "#reindex=0\n"
+                        "#reindex-chainstate=0\n"
                         "#xnode=1\n"
                         "#xnodeprivkey=123123123123123123123123 ## Replace with your xnode private key\n"
                         "#externalip=123.123.123.123:29100 ## Replace with your node external IP\n";

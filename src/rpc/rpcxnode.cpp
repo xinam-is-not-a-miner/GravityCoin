@@ -112,7 +112,7 @@ UniValue xnode(const UniValue &params, bool fHelp) {
                         "  debug        - Print xnode status\n"
                         "  genkey       - Generate new xnodeprivkey\n"
                         "  outputs      - Print xnode compatible outputs\n"
-                        "  start        - Start local Hot xnode configured in hexxcoin.conf\n"
+                        "  start        - Start local Hot xnode configured in GravityCoin.conf\n"
                         "  start-alias  - Start single remote xnode by assigned alias configured in xnode.conf\n"
                         "  start-<mode> - Start remote xnodes configured in xnode.conf (<mode>: 'all', 'missing', 'disabled')\n"
                         "  status       - Print xnode status information\n"

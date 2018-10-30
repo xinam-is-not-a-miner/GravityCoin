@@ -148,7 +148,7 @@ bool IsBlockPayeeValid(const CTransaction &txNew, int nBlockHeight, CAmount bloc
         LogPrint("mnpayments", "IsBlockPayeeValid -- Valid xnode payment at height %d: %s", nBlockHeight, txNew.ToString());
         return true;
     } else {
-        if(sporkManager.IsSporkActive(SPORK_8_XNODE_PAYMENT_ENFORCEMENT)){
+        if(nBlockHeight > HF_PAYEE_CHECK){
             return false;
         } else {
             LogPrintf("XNode payment enforcement is disabled, accepting block\n");
@@ -543,7 +543,7 @@ bool CXnodeBlockPayees::IsTransactionValid(const CTransaction &txNew) {
 
     if (!hasValidPayee) return true;
 
-    LogPrintf("CXnodeBlockPayees::IsTransactionValid -- ERROR: Missing required payment, possible payees: '%s', amount: %f HXX\n", strPayeesPossible, (float) nXnodePayment / COIN);
+    LogPrintf("CXnodeBlockPayees::IsTransactionValid -- ERROR: Missing required payment, possible payees: '%s', amount: %f GXX\n", strPayeesPossible, (float) nXnodePayment / COIN);
     return false;
 }
 

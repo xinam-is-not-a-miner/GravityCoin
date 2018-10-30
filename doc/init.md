@@ -53,11 +53,11 @@ see `contrib/debian/examples/bitcoin.conf`.
 
 All three configurations assume several paths that might need to be adjusted.
 
-Binary:              `/usr/bin/hexxcoind`
-Configuration file:  `/etc/hexxcoin/hexxcoin.conf`
-Data directory:      `/var/lib/hexxcoind`
-PID file:            `/var/run/hexxcoind/hexxcoind.pid` (OpenRC and Upstart) or `/var/lib/hexxcoind/hexxcoind.pid` (systemd)
-Lock file:           `/var/lock/subsys/hexxcoind` (CentOS)
+Binary:              `/usr/bin/GravityCoind`
+Configuration file:  `/etc/GravityCoin/GravityCoin.conf`
+Data directory:      `/var/lib/GravityCoind`
+PID file:            `/var/run/GravityCoind/GravityCoind.pid` (OpenRC and Upstart) or `/var/lib/GravityCoind/GravityCoind.pid` (systemd)
+Lock file:           `/var/lock/subsys/GravityCoind` (CentOS)
 
 The configuration file, PID directory (if applicable) and data directory
 should all be owned by the bitcoin user and group.  It is advised for security
@@ -67,10 +67,10 @@ can then be controlled by group membership.
 
 3b) Mac OS X
 
-Binary:              `/usr/local/bin/hexxcoind`
-Configuration file:  `~/Library/Application Support/hexcoin/hexxcoin.conf`
-Data directory:      `~/Library/Application Support/hexxcoin`
-Lock file:           `~/Library/Application Support/hexxcoin/.lock`
+Binary:              `/usr/local/bin/GravityCoind`
+Configuration file:  `~/Library/Application Support/hexcoin/GravityCoin.conf`
+Data directory:      `~/Library/Application Support/GravityCoin`
+Lock file:           `~/Library/Application Support/GravityCoin/.lock`
 
 4. Installing Service Configuration
 -----------------------------------
@@ -81,19 +81,19 @@ Installing this .service file consists of just copying it to
 /usr/lib/systemd/system directory, followed by the command
 `systemctl daemon-reload` in order to update running systemd configuration.
 
-To test, run `systemctl start hexxcoind` and to enable for system startup run
-`systemctl enable hexxcoind`
+To test, run `systemctl start GravityCoind` and to enable for system startup run
+`systemctl enable GravityCoind`
 
 4b) OpenRC
 
 Rename bitcoind.openrc to bitcoind and drop it in /etc/init.d.  Double
 check ownership and permissions and make it executable.  Test it with
-`/etc/init.d/hexxcoind start` and configure it to run on startup with
-`rc-update add hexxcoind`
+`/etc/init.d/GravityCoind start` and configure it to run on startup with
+`rc-update add GravityCoind`
 
 4c) Upstart (for Debian/Ubuntu based distributions)
 
-Drop bitcoind.conf in /etc/init.  Test by running `service hexxcoind start`
+Drop bitcoind.conf in /etc/init.  Test by running `service GravityCoind start`
 it will automatically start on reboot.
 
 NOTE: This script is incompatible with CentOS 5 and Amazon Linux 2014 as they
@@ -101,7 +101,7 @@ use old versions of Upstart and do not supply the start-stop-daemon utility.
 
 4d) CentOS
 
-Copy hexxcoind.init to /etc/init.d/hexxcoind. Test by running `service hexxcoind start`.
+Copy GravityCoind.init to /etc/init.d/GravityCoind. Test by running `service GravityCoind start`.
 
 Using this script, you can adjust the path and flags to the bitcoind program by
 setting the BITCOIND and FLAGS environment variables in the file
@@ -110,7 +110,7 @@ setting the BITCOIND and FLAGS environment variables in the file
 4e) Mac OS X
 
 Copy org.bitcoin.bitcoind.plist into ~/Library/LaunchAgents. Load the launch agent by
-running `launchctl load ~/Library/LaunchAgents/org.hexxcoin.hexxcoind.plist`.
+running `launchctl load ~/Library/LaunchAgents/org.GravityCoin.GravityCoind.plist`.
 
 This Launch Agent will cause bitcoind to start whenever the user logs in.
 

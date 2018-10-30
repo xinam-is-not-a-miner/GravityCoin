@@ -33,7 +33,7 @@ class TxViewDelegate : public QAbstractItemDelegate
     Q_OBJECT
 public:
     TxViewDelegate(const PlatformStyle *platformStyle, QObject *parent=nullptr):
-        QAbstractItemDelegate(parent), unit(BitcoinUnits::HXX),
+        QAbstractItemDelegate(parent), unit(BitcoinUnits::GXX),
         platformStyle(platformStyle)
     {
 
@@ -173,13 +173,13 @@ void OverviewPage::handleEnabledTorChanged(){
 
 	if(ui->checkboxEnabledTor->isChecked()){
 		if (WriteBinaryFileTor(pathTorSetting.string().c_str(), "1")) {
-			msgBox.setText("Please restart the Hexxcoin wallet to route your connection to TOR to protect your IP address. \nSyncing your wallet might be slower with TOR.");
+			msgBox.setText("Please restart the GravityCoin wallet to route your connection to TOR to protect your IP address. \nSyncing your wallet might be slower with TOR.");
 		} else {
 			msgBox.setText("Anonymous communication cannot enable");
 		}
 	}else{
 		if (WriteBinaryFileTor(pathTorSetting.string().c_str(), "0")) {
-			msgBox.setText("Please restart the Hexxcoin wallet to disable route your connection to TOR to protect your IP address.");
+			msgBox.setText("Please restart the GravityCoin wallet to disable route your connection to TOR to protect your IP address.");
 		} else {
 			msgBox.setText("Anonymous communication cannot disable");
 		}
@@ -274,7 +274,7 @@ void OverviewPage::setWalletModel(WalletModel *model)
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
     }
 
-    // update the display unit, to not use the default ("HXX")
+    // update the display unit, to not use the default ("GXX")
     updateDisplayUnit();
 }
 

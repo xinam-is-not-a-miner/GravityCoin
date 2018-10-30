@@ -1,7 +1,7 @@
 Gitian building
 ================
 
-*Setup instructions for a Gitian build of hexxcoin core using a Debian VM or physical system.*
+*Setup instructions for a Gitian build of GravityCoin Core using a Debian VM or physical system.*
 
 Gitian is the deterministic build process that is used to build the Bitcoin
 Core executables. It provides a way to be reasonably sure that the
@@ -26,7 +26,7 @@ Table of Contents
 - [Installing Gitian](#installing-gitian)
 - [Setting up the Gitian image](#setting-up-the-gitian-image)
 - [Getting and building the inputs](#getting-and-building-the-inputs)
-- [Building hexxcoin core](#building-bitcoin-core)
+- [Building GravityCoin Core](#building-bitcoin-core)
 - [Building an alternative repository](#building-an-alternative-repository)
 - [Signing externally](#signing-externally)
 - [Uploading signatures](#uploading-signatures)
@@ -309,7 +309,7 @@ Clone the git repositories for bitcoin and Gitian.
 
 ```bash
 git clone https://github.com/devrandom/gitian-builder.git
-git clone https://github.com/hexxcointakeover/hexxcoin
+git clone https://github.com/GravityCointakeover/GravityCoin
 git clone https://github.com/bitcoin-core/gitian.sigs.git
 ```
 
@@ -337,15 +337,15 @@ Getting and building the inputs
 --------------------------------
 
 Follow the instructions in [doc/release-process.md](release-process.md#fetch-and-build-inputs-first-time-or-when-dependency-versions-change)
-in the hexxcoin repository under 'Fetch and create inputs' to install sources which require
+in the GravityCoin repository under 'Fetch and create inputs' to install sources which require
 manual intervention. Also optionally follow the next step: 'Seed the Gitian sources cache
 and offline git repositories' which will fetch the remaining files required for building
 offline.
 
-Building hexxcoin core
+Building GravityCoin Core
 ----------------
 
-To build hexxcoin core (for Linux, OS X and Windows) just follow the steps under 'perform
+To build GravityCoin Core (for Linux, OS X and Windows) just follow the steps under 'perform
 Gitian builds' in [doc/release-process.md](release-process.md#perform-gitian-builds) in the bitcoin repository.
 
 This may take some time as it will build all the dependencies needed for each descriptor.
@@ -391,11 +391,11 @@ and inputs.
 
 For example:
 ```bash
-URL=https://github.com/snguyen-vn/hexxcoin.git
+URL=https://github.com/snguyen-vn/GravityCoin.git
 COMMIT=2014_03_windows_unicode_path
-./bin/gbuild --commit hexxcoin=${COMMIT} --url bitcoin=${URL} ../bitcoin/contrib/gitian-descriptors/gitian-linux.yml
-./bin/gbuild --commit hexxcoin=${COMMIT} --url bitcoin=${URL} ../bitcoin/contrib/gitian-descriptors/gitian-win.yml
-./bin/gbuild --commit hexxcoin=${COMMIT} --url bitcoin=${URL} ../bitcoin/contrib/gitian-descriptors/gitian-osx.yml
+./bin/gbuild --commit GravityCoin=${COMMIT} --url bitcoin=${URL} ../bitcoin/contrib/gitian-descriptors/gitian-linux.yml
+./bin/gbuild --commit GravityCoin=${COMMIT} --url bitcoin=${URL} ../bitcoin/contrib/gitian-descriptors/gitian-win.yml
+./bin/gbuild --commit GravityCoin=${COMMIT} --url bitcoin=${URL} ../bitcoin/contrib/gitian-descriptors/gitian-osx.yml
 ```
 
 Building fully offline
@@ -443,10 +443,10 @@ Then when building, override the remote URLs that gbuild would otherwise pull fr
 cd /some/root/path/
 git clone https://github.com/bitcoin-core/bitcoin-detached-sigs.git
 
-HXXPATH=/some/root/path/bitcoin
+GXXPATH=/some/root/path/bitcoin
 SIGPATH=/some/root/path/bitcoin-detached-sigs
 
-./bin/gbuild --url bitcoin=${HXXPATH},signature=${SIGPATH} ../bitcoin/contrib/gitian-descriptors/gitian-win-signer.yml
+./bin/gbuild --url bitcoin=${GXXPATH},signature=${SIGPATH} ../bitcoin/contrib/gitian-descriptors/gitian-win-signer.yml
 ```
 
 Signing externally

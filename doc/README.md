@@ -1,28 +1,28 @@
-hexxcoin core 0.13.2.x
+GravityCoin Core 0.13.2.x
 =====================
 
 Setup
 ---------------------
-[hexxcoin core] (https://hexxcoin.io/get-hexxcoin/) is the original hexxcoin client and it builds the backbone of the network. However, it downloads and stores the entire history of hexxcoin transactions (which is currently several hundreds MBs); depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
+[GravityCoin Core] (https://GravityCoin.io/get-GravityCoin/) is the original GravityCoin client and it builds the backbone of the network. However, it downloads and stores the entire history of GravityCoin transactions (which is currently several hundreds MBs); depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
 
 Running
 ---------------------
-The following are some helpful notes on how to run hexxcoin on your native platform.
+The following are some helpful notes on how to run GravityCoin on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- `bin/hexxcoin-qt` (GUI) or
-- `bin/hexxcoind` (headless)
+- `bin/GravityCoin-qt` (GUI) or
+- `bin/GravityCoind` (headless)
 
 ### Windows
 
-Unpack the files into a directory, and then run hexxcoin-qt.exe.
+Unpack the files into a directory, and then run GravityCoin-qt.exe.
 
 ### OS X
 
-Drag hexxcoin-Core to your applications folder, and then run hexxcoin-core.
+Drag GravityCoin-Core to your applications folder, and then run GravityCoin-core.
 
 ### Need Help?
 
@@ -33,7 +33,7 @@ for help and more information.
 
 Building
 ---------------------
-The following are developer notes on how to build hexxcoin on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build GravityCoin on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [OS X Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
@@ -43,7 +43,7 @@ The following are developer notes on how to build hexxcoin on your native platfo
 
 Development
 ---------------------
-The hexxcoin repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The GravityCoin repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Multiwallet Qt Development](multiwallet-qt.md)

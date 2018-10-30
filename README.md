@@ -1,11 +1,46 @@
-Hexxcoin [HXX] Core update 2018
+GravityCoin [GXX] Core update 2018
 ===============================
 
-[![Build Status](https://travis-ci.org/hexxcointakeover/hexxcoin.svg?branch=master)](https://travis-ci.org/hexxcointakeover/hexxcoin)
 
-# **Xnodes alive!**
-# ** ZEROCOIN ACTIVATED**
+[![Build Status](https://travis-ci.org/GravityCointakeover/GravityCoin.svg?branch=master)](https://travis-ci.org/GravityCointakeover/GravityCoin)
 
+
+
+Basic changes for rebrand
+----------------
+To update your current Hexxcoin wallet to the new GravityCoin wallet you only have to rename the hexxcoin data/application folder and the hexxcoin.conf file to GravityCoin and GravityCoin.conf
+
+Before:
+```
+(Windows) -> C:\Users\Username\AppData\Roaming\hexxcoin
+(Mac) -> /Users/Username/Library/Application Support/hexxcoin
+(Unix) -> /.hexxcoin
+```
+After:
+```
+(Windows) -> C:\Users\Username\AppData\Roaming\GravityCoin
+(Mac) -> /Users/Username/Library/Application Support/GravityCoin
+(Unix) -> /.GravityCoin
+```
+
+```
+hexxcoin.conf --> GravityCoin.conf
+```
+
+Now download the latest release and start the new wallet.
+
+## CLI Commands
+
+The CLI commands for GravityCoin changed too, for example:
+
+```
+./hexxcoind -daemon -> ./GravityCoind -daemon
+./hexxcoin-cli stop -> ./GravityCoin-cli stop
+./hexxcoin-cli getinfo -> ./GravityCoin-cli getinfo
+./hexxcoin-cli xnode status -> ./GravityCoin-cli xnode status
+```
+
+## Zerocoin
 
 Anonymous Zerocoin Protocol:
 https://en.wikipedia.org/wiki/Zerocoin
@@ -13,9 +48,12 @@ https://en.wikipedia.org/wiki/Zerocoin
 Zerocoin  parameters RSA-2048 from RSA Factoring Challenge
 https://en.wikipedia.org/wiki/RSA_Factoring_Challenge
 
-Hexxcoin
+How to use Zerocoin:
+https://medium.com/@hxxcoin/hexxcoin-zerocoin-explaination-and-usage-guide-39013f8c4908
+
+GravityCoin
 ----------------
-* Coin Suffix: HXX
+* Coin Suffix: GXX
 * Algorithm:lyra2z330
 * Algo params: LYRA2(BEGIN(thash), 32, BEGIN(nVersion), 80, BEGIN(nVersion), 80, 2, 330, 256)
 * Target Spacing: 150 Seconds
@@ -23,26 +61,23 @@ Hexxcoin
 * Confirmation: 6 Blocks
 * Maturity: 120 Blocks
 * Blocks: ~576 per day
-* Total Coins: 9,999,999 HXX
-* Min TX Fee: 0.001 HXX
+* Total Coins: 9,999,999 GXX
+* Min TX Fee: 0.001 GXX
 * Block Size: 4MB
-
 
 Net Parameters
 ----------------
 * P2P Port=29100
 * RPC Port=29200
 * Client core=13.4
-* Client name=hexxcoin.qt
-* Conf file=hexxcoin.conf
+* Client name=GravityCoin.qt
+* Conf file=GravityCoin.conf
 
 Installation folder
 ----------------
-* Windows: C:\Users\Username\AppData\Roaming\hexxcoin
-* Mac: /Library/Application Support/hexxcoin
-* Unix: /.hexxcoin
-
-
+* Windows: C:\Users\Username\AppData\Roaming\GravityCoin
+* Mac: /Library/Application Support/GravityCoin
+* Unix: /.GravityCoin
 
 Debian/Ubuntu Linux Daemon Build Instructions
 ================================================
@@ -72,9 +107,9 @@ Debian/Ubuntu Linux Daemon Build Instructions
 	for qt:
 	sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libqrencode-dev
 
-	git clone https://github.com/hexxcointakeover/hexxcoin
+	git clone https://github.com/GravityCoinOfficial/gravitycoin
 
-	cd hexxcoin
+	cd GravityCoin
 	for vps:
 	./autogen.sh
 	./configure  --without-gui
@@ -86,27 +121,27 @@ Debian/Ubuntu Linux Daemon Build Instructions
 	make -j 4   (-j is optional, number of your cores, -j 4)
 
 	cd src
-	strip hexxcoind
-	strip hexxcoin-cli
+	strip GravityCoind
+	strip GravityCoin-cli
 	or:
 	cd src
 	cd qt
-	strip hexxcoin-qt
+	strip GravityCoin-qt
 
 	files are:
-	hexxcoind
-	hexxcoin-cli
+	GravityCoind
+	GravityCoin-cli
 
-	hexxcoin-qt
-	hexxcoin.conf
+	GravityCoin-qt
+	GravityCoin.conf
 	xnode.conf
 	data folder:
-	hexxcoin
+	GravityCoin
 
 	port 29100
 	rpc port 29200
 
-Example hexxcoin.conf Configuration
+Example GravityCoin.conf Configuration
 ===================================================
 
 	listen=1

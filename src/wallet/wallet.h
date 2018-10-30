@@ -726,7 +726,7 @@ public:
     void ListLockedCoins(std::vector<COutPoint>& vOutpts);
 
     // xnode
-    /// Get 2000 HXX output and keys which can be used for the Xnode
+    /// Get 2000 GXX output and keys which can be used for the Xnode
     bool GetXnodeVinAndKeys(CTxIn& txinRet, CPubKey& pubKeyRet, CKey& keyRet, std::string strTxHash = "", std::string strOutputIndex = "");
     /// Extract txin information and keys from output
     bool GetVinAndKeysFromOutput(COutput out, CTxIn& txinRet, CPubKey& pubKeyRet, CKey& keyRet);

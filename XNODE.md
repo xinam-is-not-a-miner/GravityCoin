@@ -7,7 +7,7 @@ Prerequisites
 -------------
  - Ubuntu 16.04+
  - Port **29100** is open
- - Libraries to build from hexxcoin source if you want to build it yourself
+ - Libraries to build from GravityCoin source if you want to build it yourself
 
 Step 0. ON VPS: Acquire the binaries
 ----------------------
@@ -18,17 +18,17 @@ Either
 <summary><strong>Download the prebuilt binaries</strong></summary>
 <strong>0.1</strong> Install prebuild client and full chain
 
-	mkdir .hexxcoin
-	cd .hexxcoin
+	mkdir .GravityCoin
+	cd .GravityCoin
 	sudo apt-get install unzip
-	wget https://chainfiles.chainsilo.com/chainfilesbin.zip
+	wget https://github.com/hexxcointakeover/hexxcoin/releases/tag/4.0.5.0
 	unzip chainfiles.zip
 	cd ..
-	wget https://github.com/hexxcointakeover/hexxcoin/releases/download/4.0.4.2/linux-x64.tar.gz
+	wget https://github.com/GravityCointakeover/GravityCoin/releases/download/4.0.5.0/linux-x64.tar.gz
 	tar xvfz linux-x64.tar.gz
 	
-	./hexxcoind -daemon
-	./hexxcoin-cli getinfo
+	./GravityCoind -daemon
+	./GravityCoin-cli getinfo
 </details>
 
 or
@@ -37,7 +37,7 @@ or
 <summary><strong>Build from source</strong></summary>
 <strong>0.1.</strong>  Check out from source:
 
-    git clone https://github.com/hexxcointakeover/hexxcoin
+    git clone https://github.com/GravityCointakeover/GravityCoin
 
 <strong>0.2.</strong>  See [README.md](README.md) for instructions on building.
 </details>
@@ -71,7 +71,7 @@ Step 2. ON LOCAL MACHINE: First run on your Local Wallet
 
     getaccountaddress XN1
 
-<strong>2.4.</strong>  Send to received address <strong>exactly 2000 HXX</strong> in <strong>1 transaction</strong>. Wait for 15 confirmations.
+<strong>2.4.</strong>  Send to received address <strong>exactly 2000 GXX</strong> in <strong>1 transaction</strong>. Wait for 15 confirmations.
 
 <strong>2.5.</strong>  Close the wallet
 </details>
@@ -80,43 +80,43 @@ Step 2. ON LOCAL MACHINE: First run on your Local Wallet
 <summary><strong>If you are using the daemon</strong></summary>
 <strong>2.0.</strong>  Go to the checked out folder or where you extracted the binaries
 
-    cd hexxcoin/src
+    cd GravityCoin/src
 
 <strong>2.1.</strong>  Start daemon:
 
-    ./hexxcoind -daemon -server
+    ./GravityCoind -daemon -server
 
 <strong>2.2.</strong>  Generate xnodeprivkey:
 
-    ./hexxcoin-cli xnode genkey
+    ./GravityCoin-cli xnode genkey
 
 (Store this key)
 
 <strong>2.3.</strong>  Get wallet address:
 
-    ./hexxcoin-cli getaccountaddress XN1
+    ./GravityCoin-cli getaccountaddress XN1
 
-<strong>2.4.</strong>  Send to received address <strong>exactly 2000 HXX</strong> in <strong>1 transaction</strong>. Wait for 15 confirmations.
+<strong>2.4.</strong>  Send to received address <strong>exactly 2000 GXX</strong> in <strong>1 transaction</strong>. Wait for 15 confirmations.
 
 <strong>2.5.</strong>  Stop daemon:
 
-    ./hexxcoin-cli stop
+    ./GravityCoin-cli stop
 </details>
 
 
 ## For both:
 
-**2.6.**  Create file **xnode.conf** (in **~/.hexxcoin**, **C:\Users\USER\AppData\Roaming\hexxcoin** or **~/Library/Application Support/hexxcoin** depending on your Operating System) containing the following info:
+**2.6.**  Create file **xnode.conf** (in **~/.GravityCoin**, **C:\Users\USER\AppData\Roaming\GravityCoin** or **~/Library/Application Support/GravityCoin** depending on your Operating System) containing the following info:
  - LABEL: A one word name you make up to call your node (ex. XN1)
  - IP:PORT: Your xnode VPS's IP, and the port is always 29100.
  - XNODEPRIVKEY: This is the result of your "xnode genkey" from earlier.
- - TRANSACTION HASH: The collateral tx. hash from the 2000 HXX deposit.
+ - TRANSACTION HASH: The collateral tx. hash from the 2000 GXX deposit.
  - INDEX: The Index from the transaction hash
 
 To get TRANSACTION HASH, run:
 
 ```
-./hexxcoin-cli xnode outputs
+./GravityCoin-cli xnode outputs
 ```
 or
 ```
@@ -139,7 +139,7 @@ As long as the xnode is listed in your xnode.conf file the funds are automatical
 
 Step 3. ON VPS: Update config files
 ----------------------
-**3.1.**  Create file **hexxcoin.conf** (in folder **~/.hexxcoin**)
+**3.1.**  Create file **GravityCoin.conf** (in folder **~/.GravityCoin**)
 
     server=1
     xnode=1
@@ -159,15 +159,15 @@ Step 4. ON LOCAL MACHINE: Start the xnode
 <summary><strong>With daemon</strong></summary>
 <strong>4.1</strong> Start xnode:
 
-    ./hexxcoin-cli xnode start-alias <LABEL>
+    ./GravityCoin-cli xnode start-alias <LABEL>
 
 For example:
 
-    ./hexxcoin-cli xnode start-alias XN1
+    ./GravityCoin-cli xnode start-alias XN1
 
 <strong>4.2</strong>  To check node status:
 
-    ./hexxcoin-cli xnode debug
+    ./GravityCoin-cli xnode debug
 
 </details>
 

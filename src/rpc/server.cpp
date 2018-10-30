@@ -259,7 +259,7 @@ UniValue stop(const UniValue& params, bool fHelp)
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();
-    return "hexxcoin server stopping";
+    return "GravityCoin server stopping";
 }
 
 /**
@@ -278,11 +278,11 @@ static const CRPCCommand vRPCCommands[] =
     { "addressindex",       "getaddresstxids",        &getaddresstxids,        false },
     { "addressindex",       "getaddressbalance",      &getaddressbalance,      false },
         /* Dash features */
-    { "hexxcoin",               "xnode",             &xnode,             true  },
-    { "hexxcoin",               "xnsync",           &xnsync,             true  },
-    { "hexxcoin",               "xnodelist",         &xnodelist,         true  },
-    { "hexxcoin",               "xnodebroadcast",    &xnodebroadcast,    true  },
-    { "hexxcoin",               "getpoolinfo",            &getpoolinfo,            true  },
+    { "GravityCoin",               "xnode",             &xnode,             true  },
+    { "GravityCoin",               "xnsync",           &xnsync,             true  },
+    { "GravityCoin",               "xnodelist",         &xnodelist,         true  },
+    { "GravityCoin",               "xnodebroadcast",    &xnodebroadcast,    true  },
+    { "GravityCoin",               "getpoolinfo",            &getpoolinfo,            true  },
 };
 
 CRPCTable::CRPCTable()

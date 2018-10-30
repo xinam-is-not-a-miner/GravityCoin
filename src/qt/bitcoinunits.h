@@ -56,7 +56,7 @@ public:
      */
     enum Unit
     {
-        HXX,
+        GXX,
         mBTC,
         uBTC
     };

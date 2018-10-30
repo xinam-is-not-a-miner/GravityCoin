@@ -93,11 +93,11 @@ TESTS =
 BENCHMARKS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += hexxcoind
+  bin_PROGRAMS += GravityCoind
 endif
 
 if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += hexxcoin-cli hexxcoin-tx
+  bin_PROGRAMS += GravityCoin-cli GravityCoin-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
@@ -206,7 +206,7 @@ obj/build.h: FORCE
 	  $(abs_top_srcdir)
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between hexxcoind and hexxcoin-qt
+# server: shared between GravityCoind and GravityCoin-qt
 libbitcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
 libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_server_a_SOURCES = \
@@ -259,7 +259,7 @@ libbitcoin_zmq_a_SOURCES = \
 endif
 
 
-# wallet: shared between hexxcoind and hexxcoin-qt, but only linked
+# wallet: shared between GravityCoind and GravityCoin-qt, but only linked
 # when wallet enabled
 libbitcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
@@ -349,7 +349,7 @@ libbitcoin_consensus_a_SOURCES = \
   crypto/Lyra2Z/Sponge.c \
   crypto/Lyra2Z/Sponge.h
 
-# common: shared between hexxcoind, and hexxcoin-qt and non-server tools
+# common: shared between GravityCoind, and GravityCoin-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_SOURCES = \
@@ -425,7 +425,7 @@ if GLIBC_BACK_COMPAT
 libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 endif
 
-# cli: shared between hexxcoin-cli and hexxcoin-qt
+# cli: shared between GravityCoin-cli and GravityCoin-qt
 libbitcoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_cli_a_SOURCES = \
@@ -436,16 +436,16 @@ nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
 # bitcoind binary #
-hexxcoind_SOURCES = bitcoind.cpp
-hexxcoind_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-hexxcoind_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-hexxcoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+GravityCoind_SOURCES = bitcoind.cpp
+GravityCoind_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+GravityCoind_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+GravityCoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-hexxcoind_SOURCES += bitcoind-res.rc
+GravityCoind_SOURCES += bitcoind-res.rc
 endif
 
-hexxcoind_LDADD = \
+GravityCoind_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
   $(LIBUNIVALUE) \
@@ -459,38 +459,38 @@ hexxcoind_LDADD = \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-hexxcoind_LDADD += $(TOR_LIBS) $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) -lz
+GravityCoind_LDADD += $(TOR_LIBS) $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) -lz
  
 # bitcoin-cli binary #
-hexxcoin_cli_SOURCES = bitcoin-cli.cpp
-hexxcoin_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-hexxcoin_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-hexxcoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+GravityCoin_cli_SOURCES = bitcoin-cli.cpp
+GravityCoin_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+GravityCoin_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+GravityCoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-hexxcoin_cli_SOURCES += bitcoin-cli-res.rc
+GravityCoin_cli_SOURCES += bitcoin-cli-res.rc
 endif
 
-hexxcoin_cli_LDADD = \
+GravityCoin_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
 
-hexxcoin_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+GravityCoin_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
 # bitcoin-tx binary #
-hexxcoin_tx_SOURCES = bitcoin-tx.cpp
-hexxcoin_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-hexxcoin_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-hexxcoin_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+GravityCoin_tx_SOURCES = bitcoin-tx.cpp
+GravityCoin_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+GravityCoin_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+GravityCoin_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-hexxcoin_tx_SOURCES += bitcoin-tx-res.rc
+GravityCoin_tx_SOURCES += bitcoin-tx-res.rc
 endif
 
-hexxcoin_tx_LDADD = \
+GravityCoin_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
@@ -498,7 +498,7 @@ hexxcoin_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1)
 
-hexxcoin_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+GravityCoin_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
 # bitcoinconsensus library #

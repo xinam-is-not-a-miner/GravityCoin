@@ -226,7 +226,7 @@ void CActiveXnode::ManageStateInitial() {
     }
 
     if (pwalletMain->GetBalance() < XNODE_COIN_REQUIRED * COIN) {
-        LogPrintf("CActiveXnode::ManageStateInitial -- %s: Wallet balance is < 2000 HXX\n", GetStateString());
+        LogPrintf("CActiveXnode::ManageStateInitial -- %s: Wallet balance is < 2000 GXX\n", GetStateString());
         return;
     }
 

@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2017-2018 The hexxcoin developers
+// Copyright (c) 2017-2018 The GravityCoin developers
 
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -13,8 +13,8 @@
 // HF constants
 static const int HF_XNODE_HEIGHT = 222665; //estimated fork, GMT: Saturday, 3rd March 2018, 07.32 am
 static const int HF_XNODE_PAYMENT_START = HF_XNODE_HEIGHT + 576; // about 24h after HF
-static const int HF_F_PAYMENT_STOP = 643145; // 2 years after fork for coin development
-static const int HF_F_PAYMENT_START = HF_XNODE_HEIGHT;
+static const int HF_F_PAYMENT_START = 230729;
+static const int HF_PAYEE_CHECK = 350000;
 
 /** The maximum allowed size for a serialized block, in bytes (only for buffer size limits) */
 static const unsigned int MAX_BLOCK_SERIALIZED_SIZE = 4000000;

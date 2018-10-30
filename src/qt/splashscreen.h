@@ -5,8 +5,10 @@
 #ifndef BITCOIN_QT_SPLASHSCREEN_H
 #define BITCOIN_QT_SPLASHSCREEN_H
 
+#include <functional>
 #include <QSplashScreen>
 
+class CWallet;
 class NetworkStyle;
 
 /** Class for the splashscreen with information of the running client.
@@ -15,13 +17,12 @@ class NetworkStyle;
  * can take a long time, and in that case a progress window that cannot be
  * moved around and minimized has turned out to be frustrating to the user.
  */
-class SplashScreen : public QWidget
+class SplashScreen : public QSplashScreen
 {
     Q_OBJECT
 
 public:
-    explicit SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle);
-    ~SplashScreen();
+    explicit SplashScreen(const QPixmap &pixmap = QPixmap(), Qt::WindowFlags f = 0);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -39,11 +40,14 @@ private:
     void subscribeToCoreSignals();
     /** Disconnect core signals to splash screen */
     void unsubscribeFromCoreSignals();
+    /** Connect wallet signals to splash screen */
+    void ConnectWallet(CWallet*);
 
     QPixmap pixmap;
     QString curMessage;
     QColor curColor;
     int curAlignment;
+
 };
 
 #endif // BITCOIN_QT_SPLASHSCREEN_H
