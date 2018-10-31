@@ -98,6 +98,15 @@ public:
         assert(consensus.hashGenesisBlock == uint256S("0x322bad477efb4b33fa4b1f0b2861eaf543c61068da9898a95062fdb02ada486f"));
         assert(genesis.hashMerkleRoot == uint256S("0x31f49b23f8a1185f85a6a6972446e72a86d50ca0e3b3ffe217d0c2fea30473db"));
         vSeeds.push_back(CDNSSeedData("54.38.187.24", "54.38.187.24"));
+        vSeeds.push_back(CDNSSeedData("138.185.116.66", "138.185.116.66"));
+        vSeeds.push_back(CDNSSeedData("138.185.116.67", "138.185.116.67"));
+        vSeeds.push_back(CDNSSeedData("138.185.116.68", "138.185.116.68"));
+        vSeeds.push_back(CDNSSeedData("138.185.116.69", "138.185.116.69"));
+        vSeeds.push_back(CDNSSeedData("hxx-addnode01.chainsilo.com", "hxx-addnode01.chainsilo.com"));
+        vSeeds.push_back(CDNSSeedData("hxx-addnode02.chainsilo.com", "hxx-addnode02.chainsilo.com"));
+        vSeeds.push_back(CDNSSeedData("hxx-addnode03.chainsilo.com", "hxx-addnode03.chainsilo.com"));
+        vSeeds.push_back(CDNSSeedData("hxx-addnode04.chainsilo.com", "hxx-addnode04.chainsilo.com"));
+        vSeeds.push_back(CDNSSeedData("hxx-addnode05.chainsilo.com", "hxx-addnode05.chainsilo.com"));
         vSeeds.push_back(CDNSSeedData("5.79.119.106", "5.79.119.106"));
         vSeeds.push_back(CDNSSeedData("76.74.170.128", "76.74.170.128"));
         vSeeds.push_back(CDNSSeedData("81.171.19.63", "81.171.19.63"));
@@ -106,11 +115,6 @@ public:
         vSeeds.push_back(CDNSSeedData("81.17.60.209", "81.17.60.209"));
         vSeeds.push_back(CDNSSeedData("81.17.60.210", "81.17.60.210"));
         vSeeds.push_back(CDNSSeedData("81.17.60.211", "81.17.60.211"));
-        vSeeds.push_back(CDNSSeedData("hxx-addnode01.chainsilo.com", "hxx-addnode01.chainsilo.com"));
-        vSeeds.push_back(CDNSSeedData("hxx-addnode02.chainsilo.com", "hxx-addnode02.chainsilo.com"));
-        vSeeds.push_back(CDNSSeedData("hxx-addnode03.chainsilo.com", "hxx-addnode03.chainsilo.com"));
-        vSeeds.push_back(CDNSSeedData("hxx-addnode04.chainsilo.com", "hxx-addnode04.chainsilo.com"));
-        vSeeds.push_back(CDNSSeedData("hxx-addnode05.chainsilo.com", "hxx-addnode05.chainsilo.com"));
         vSeeds.push_back(CDNSSeedData("5.79.70.22", "5.79.70.22"));
         vSeeds.push_back(CDNSSeedData("62.212.95.122", "62.212.95.122"));
         vSeeds.push_back(CDNSSeedData("37.48.115.170", "37.48.115.170"));
@@ -151,8 +155,9 @@ public:
         (220974, uint256S("0xd85b2231760133f521aec73e240c7867b62f4981aecbf4d2f797813925ecdccb"))
         (222665, uint256S("0x348fda46a431cc2b66f94f9086df05491d8c645576de3d5ab783434fd9c47043"))
         (258199, uint256S("0x012a7e8ad93aca202d3833f843e79b7eabf124e2697b7b411d51c352589ee2e6"))
-        (267697, uint256S("0x3f0726ac75b77902e94cd172fc997ed7979d8238e28133f5300d09c87ba3d479")),
-        1526792483, // * UNIX timestamp of last checkpoint block
+        (267697, uint256S("0x3f0726ac75b77902e94cd172fc997ed7979d8238e28133f5300d09c87ba3d479"))
+        (361565, uint256S("0x42fed9492d74eb36f42fc339ebe148ca051f65c767b21008b1bc4631ded020de")),
+        1541011922, // * UNIX timestamp of last checkpoint block
         204045,    // * total number of transactions between genesis and last checkpoint
                   //   (the tx=... number in the SetBestChain debug.log lines)
 		576.0 // * estimated number of transactions per day after checkpoint
