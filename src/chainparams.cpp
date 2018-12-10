@@ -97,50 +97,26 @@ public:
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x322bad477efb4b33fa4b1f0b2861eaf543c61068da9898a95062fdb02ada486f"));
         assert(genesis.hashMerkleRoot == uint256S("0x31f49b23f8a1185f85a6a6972446e72a86d50ca0e3b3ffe217d0c2fea30473db"));
-        vSeeds.push_back(CDNSSeedData("54.38.187.24", "54.38.187.24"));
         vSeeds.push_back(CDNSSeedData("138.185.116.66", "138.185.116.66"));
         vSeeds.push_back(CDNSSeedData("138.185.116.67", "138.185.116.67"));
         vSeeds.push_back(CDNSSeedData("138.185.116.68", "138.185.116.68"));
         vSeeds.push_back(CDNSSeedData("138.185.116.69", "138.185.116.69"));
-        vSeeds.push_back(CDNSSeedData("hxx-addnode01.chainsilo.com", "hxx-addnode01.chainsilo.com"));
-        vSeeds.push_back(CDNSSeedData("hxx-addnode02.chainsilo.com", "hxx-addnode02.chainsilo.com"));
-        vSeeds.push_back(CDNSSeedData("hxx-addnode03.chainsilo.com", "hxx-addnode03.chainsilo.com"));
-        vSeeds.push_back(CDNSSeedData("hxx-addnode04.chainsilo.com", "hxx-addnode04.chainsilo.com"));
-        vSeeds.push_back(CDNSSeedData("hxx-addnode05.chainsilo.com", "hxx-addnode05.chainsilo.com"));
         vSeeds.push_back(CDNSSeedData("5.79.119.106", "5.79.119.106"));
-        vSeeds.push_back(CDNSSeedData("76.74.170.128", "76.74.170.128"));
-        vSeeds.push_back(CDNSSeedData("81.171.19.63", "81.171.19.63"));
-        vSeeds.push_back(CDNSSeedData("81.171.29.144", "81.171.29.144"));
-        vSeeds.push_back(CDNSSeedData("95.211.244.14", "95.211.244.14"));
         vSeeds.push_back(CDNSSeedData("81.17.60.209", "81.17.60.209"));
         vSeeds.push_back(CDNSSeedData("81.17.60.210", "81.17.60.210"));
         vSeeds.push_back(CDNSSeedData("81.17.60.211", "81.17.60.211"));
-        vSeeds.push_back(CDNSSeedData("5.79.70.22", "5.79.70.22"));
-        vSeeds.push_back(CDNSSeedData("62.212.95.122", "62.212.95.122"));
+        vSeeds.push_back(CDNSSeedData("95.211.247.232", "95.211.247.232"));	
         vSeeds.push_back(CDNSSeedData("37.48.115.170", "37.48.115.170"));
         vSeeds.push_back(CDNSSeedData("81.171.29.52", "81.171.29.52"));
         vSeeds.push_back(CDNSSeedData("5.79.106.46", "5.79.106.46"));
         vSeeds.push_back(CDNSSeedData("5.79.100.69", "5.79.100.69"));
         vSeeds.push_back(CDNSSeedData("5.79.113.83", "5.79.113.83"));
-        vSeeds.push_back(CDNSSeedData("5.79.109.42", "5.79.109.42"));
-        vSeeds.push_back(CDNSSeedData("81.171.12.116", "81.171.12.116"));
-        vSeeds.push_back(CDNSSeedData("5.79.119.152", "5.79.119.152"));
-        vSeeds.push_back(CDNSSeedData("5.79.119.153", "5.79.119.153"));
-        vSeeds.push_back(CDNSSeedData("37.48.73.102", "37.48.73.102"));
-        vSeeds.push_back(CDNSSeedData("37.48.90.244", "37.48.90.244"));
-        vSeeds.push_back(CDNSSeedData("5.79.119.228", "5.79.119.228"));
-        vSeeds.push_back(CDNSSeedData("37.48.73.245", "37.48.73.245"));
-        vSeeds.push_back(CDNSSeedData("37.48.73.232", "37.48.73.232"));
-        vSeeds.push_back(CDNSSeedData("95.211.247.232", "95.211.247.232"));		
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector < unsigned char > (1, 40);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector < unsigned char > (1, 10);
-        base58Prefixes[SECRET_KEY] = std::vector < unsigned char > (1, 210);
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container < std::vector < unsigned char > > ();
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container < std::vector < unsigned char > > ();
-        fMiningRequiresPeers = true;
-        fDefaultConsistencyChecks = false;
-        fRequireStandard = true;
-        fMineBlocksOnDemand = false;
+        vSeeds.push_back(CDNSSeedData("95.211.244.14", "95.211.244.14"));
+        vSeeds.push_back(CDNSSeedData("81.171.29.144", "81.171.29.144"));
+        vSeeds.push_back(CDNSSeedData("5.79.70.22", " 5.79.70.22"));
+        vSeeds.push_back(CDNSSeedData("62.212.95.122", "62.212.95.122"));
+
+
         fTestnetToBeDeprecatedFieldRPC = false;
 
         checkpointData = (CCheckpointData)
@@ -156,8 +132,11 @@ public:
         (222665, uint256S("0x348fda46a431cc2b66f94f9086df05491d8c645576de3d5ab783434fd9c47043"))
         (258199, uint256S("0x012a7e8ad93aca202d3833f843e79b7eabf124e2697b7b411d51c352589ee2e6"))
         (267697, uint256S("0x3f0726ac75b77902e94cd172fc997ed7979d8238e28133f5300d09c87ba3d479"))
-        (361565, uint256S("0x42fed9492d74eb36f42fc339ebe148ca051f65c767b21008b1bc4631ded020de")),
-        1541011922, // * UNIX timestamp of last checkpoint block
+        (361565, uint256S("0x42fed9492d74eb36f42fc339ebe148ca051f65c767b21008b1bc4631ded020de"))
+        (372585, uint256S("0xd905d681e3a2142629ce1798a7563751115883e365ec8dab8e9fb409ebc47343"))
+        (384340, uint256S("0x73eae2884a4925ec3f195b0496ae0418fa65bbe04338fcb0d589cc1775c81079")),
+		
+        1544481984, // * UNIX timestamp of last checkpoint block
         204045,    // * total number of transactions between genesis and last checkpoint
                   //   (the tx=... number in the SetBestChain debug.log lines)
 		576.0 // * estimated number of transactions per day after checkpoint
