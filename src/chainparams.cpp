@@ -115,7 +115,15 @@ public:
         vSeeds.push_back(CDNSSeedData("81.171.29.144", "81.171.29.144"));
         vSeeds.push_back(CDNSSeedData("5.79.70.22", " 5.79.70.22"));
         vSeeds.push_back(CDNSSeedData("62.212.95.122", "62.212.95.122"));
-
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector < unsigned char > (1, 40);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector < unsigned char > (1, 10);
+        base58Prefixes[SECRET_KEY] = std::vector < unsigned char > (1, 210);
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container < std::vector < unsigned char > > ();
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container < std::vector < unsigned char > > ();
+        fMiningRequiresPeers = true;
+        fDefaultConsistencyChecks = false;
+        fRequireStandard = true;
+        fMineBlocksOnDemand = false;
 
         fTestnetToBeDeprecatedFieldRPC = false;
 
