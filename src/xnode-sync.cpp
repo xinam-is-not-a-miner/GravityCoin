@@ -127,7 +127,6 @@ void CXnodeSync::Reset() {
     nTimeAssetSyncStarted = GetTime();
     nTimeLastXnodeList = GetTime();
     nTimeLastPaymentVote = GetTime();
-    nTimeLastGovernanceItem = GetTime();
     nTimeLastFailure = 0;
     nCountFailures = 0;
 }
@@ -167,7 +166,6 @@ void CXnodeSync::SwitchToNextAsset() {
             break;
 
         case (XNODE_SYNC_MNW):
-            nTimeLastGovernanceItem = GetTime();
             LogPrintf("CXnodeSync::SwitchToNextAsset -- Sync has finished\n");
             nRequestedXnodeAssets = XNODE_SYNC_FINISHED;
             break;

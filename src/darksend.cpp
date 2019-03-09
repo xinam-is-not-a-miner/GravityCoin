@@ -6,7 +6,6 @@
 #include "coincontrol.h"
 #include "consensus/validation.h"
 #include "darksend.h"
-//#include "governance.h"
 #include "init.h"
 #include "instantx.h"
 #include "xnode-payments.h"
@@ -2529,10 +2528,6 @@ void ThreadCheckDarkSendPool() {
             if (fXNode && (nTick % (60 * 5) == 0)) {
                 mnodeman.DoFullVerificationStep();
             }
-
-//            if(nTick % (60 * 5) == 0) {
-//                governance.DoMaintenance();
-//            }
 
             darkSendPool.CheckTimeout();
             darkSendPool.CheckForCompleteQueue();

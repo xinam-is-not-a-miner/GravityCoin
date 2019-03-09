@@ -142,13 +142,11 @@ private:
     /// Set when index has been rebuilt, clear when read
     bool fIndexRebuilt;
 
-    /// Set when xnodes are added, cleared when CGovernanceManager is notified
+    /// Set when xnodes are added, cleared when
     bool fXnodesAdded;
 
-    /// Set when xnodes are removed, cleared when CGovernanceManager is notified
+    /// Set when xnodes are removed, cleared when
     bool fXnodesRemoved;
-
-    std::vector<uint256> vecDirtyGovernanceObjectHashes;
 
     int64_t nLastWatchdogVoteTime;
 
@@ -327,24 +325,8 @@ public:
 
     void CheckAndRebuildXnodeIndex();
 
-    void AddDirtyGovernanceObjectHash(const uint256& nHash)
-    {
-        LOCK(cs);
-        vecDirtyGovernanceObjectHashes.push_back(nHash);
-    }
-
-    std::vector<uint256> GetAndClearDirtyGovernanceObjectHashes()
-    {
-        LOCK(cs);
-        std::vector<uint256> vecTmp = vecDirtyGovernanceObjectHashes;
-        vecDirtyGovernanceObjectHashes.clear();
-        return vecTmp;;
-    }
-
     bool IsWatchdogActive();
     void UpdateWatchdogVoteTime(const CTxIn& vin);
-    bool AddGovernanceVote(const CTxIn& vin, uint256 nGovernanceObjectHash);
-    void RemoveGovernanceObject(uint256 nGovernanceObjectHash);
 
     void CheckXnode(const CTxIn& vin, bool fForce = false);
     void CheckXnode(const CPubKey& pubKeyXnode, bool fForce = false);
@@ -357,10 +339,6 @@ public:
 
     void UpdatedBlockTip(const CBlockIndex *pindex);
 
-    /**
-     * Called to notify CGovernanceManager that the xnode index has been updated.
-     * Must be called while not holding the CXnodeMan::cs mutex
-     */
     void NotifyXnodeUpdates();
 
 };

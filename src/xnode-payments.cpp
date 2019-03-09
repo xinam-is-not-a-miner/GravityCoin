@@ -37,56 +37,10 @@ bool IsBlockValueValid(const CBlock &block, int nBlockHeight, CAmount blockRewar
     bool isBlockRewardValueMet = (block.vtx[0].GetValueOut() <= blockReward);
     if (fDebug) LogPrintf("block.vtx[0].GetValueOut() %lld <= blockReward %lld\n", block.vtx[0].GetValueOut(), blockReward);
 
-    // we are still using budgets, but we have no data about them anymore,
-    // all we know is predefined budget cycle and window
-
-//    const Consensus::Params &consensusParams = Params().GetConsensus();
-//
-////    if (nBlockHeight < consensusParams.nSuperblockStartBlock) {
-//        int nOffset = nBlockHeight % consensusParams.nBudgetPaymentsCycleBlocks;
-//        if (nBlockHeight >= consensusParams.nBudgetPaymentsStartBlock &&
-//            nOffset < consensusParams.nBudgetPaymentsWindowBlocks) {
-//            // NOTE: make sure SPORK_13_OLD_SUPERBLOCK_FLAG is disabled when 12.1 starts to go live
-//            if (xnodeSync.IsSynced() && !sporkManager.IsSporkActive(SPORK_13_OLD_SUPERBLOCK_FLAG)) {
-//                // no budget blocks should be accepted here, if SPORK_13_OLD_SUPERBLOCK_FLAG is disabled
-//                LogPrint("gobject", "IsBlockValueValid -- Client synced but budget spork is disabled, checking block value against block reward\n");
-//                if (!isBlockRewardValueMet) {
-//                    strErrorRet = strprintf("coinbase pays too much at height %d (actual=%d vs limit=%d), exceeded block reward, budgets are disabled",
-//                                            nBlockHeight, block.vtx[0].GetValueOut(), blockReward);
-//                }
-//                return isBlockRewardValueMet;
-//            }
-//            LogPrint("gobject", "IsBlockValueValid -- WARNING: Skipping budget block value checks, accepting block\n");
-//            // TODO: reprocess blocks to make sure they are legit?
-//            return true;
-//        }
-//        // LogPrint("gobject", "IsBlockValueValid -- Block is not in budget cycle window, checking block value against block reward\n");
-//        if (!isBlockRewardValueMet) {
-//            strErrorRet = strprintf("coinbase pays too much at height %d (actual=%d vs limit=%d), exceeded block reward, block is not in budget cycle window",
-//                                    nBlockHeight, block.vtx[0].GetValueOut(), blockReward);
-//        }
-//        return isBlockRewardValueMet;
-//    }
-
-    // superblocks started
-
-//    CAmount nSuperblockMaxValue =  blockReward + CSuperblock::GetPaymentsLimit(nBlockHeight);
-//    bool isSuperblockMaxValueMet = (block.vtx[0].GetValueOut() <= nSuperblockMaxValue);
-//    bool isSuperblockMaxValueMet = false;
-
-//    LogPrint("gobject", "block.vtx[0].GetValueOut() %lld <= nSuperblockMaxValue %lld\n", block.vtx[0].GetValueOut(), nSuperblockMaxValue);
-
-    if (!xnodeSync.IsSynced()) {
-        // not enough data but at least it must NOT exceed superblock max value
-//        if(CSuperblock::IsValidBlockHeight(nBlockHeight)) {
-//            if(fDebug) LogPrintf("IsBlockPayeeValid -- WARNING: Client not synced, checking superblock max bounds only\n");
-//            if(!isSuperblockMaxValueMet) {
-//                strErrorRet = strprintf("coinbase pays too much at height %d (actual=%d vs limit=%d), exceeded superblock max value",
-//                                        nBlockHeight, block.vtx[0].GetValueOut(), nSuperblockMaxValue);
-//            }
-//            return isSuperblockMaxValueMet;
-//        }
-        if (!isBlockRewardValueMet) {
+    if (!xnodeSync.IsSynced())
+    {
+        if (!isBlockRewardValueMet)
+        {
             strErrorRet = strprintf("coinbase pays too much at height %d (actual=%d vs limit=%d), exceeded block reward, only regular blocks are allowed at this height",
                                     nBlockHeight, block.vtx[0].GetValueOut(), blockReward);
         }
@@ -95,34 +49,12 @@ bool IsBlockValueValid(const CBlock &block, int nBlockHeight, CAmount blockRewar
     }
 
     // we are synced, let's try to check as much data as we can
-
-    if (sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED)) {
-////        if(CSuperblockManager::IsSuperblockTriggered(nBlockHeight)) {
-////            if(CSuperblockManager::IsValid(block.vtx[0], nBlockHeight, blockReward)) {
-////                LogPrint("gobject", "IsBlockValueValid -- Valid superblock at height %d: %s", nBlockHeight, block.vtx[0].ToString());
-////                // all checks are done in CSuperblock::IsValid, nothing to do here
-////                return true;
-////            }
-////
-////            // triggered but invalid? that's weird
-////            LogPrintf("IsBlockValueValid -- ERROR: Invalid superblock detected at height %d: %s", nBlockHeight, block.vtx[0].ToString());
-////            // should NOT allow invalid superblocks, when superblocks are enabled
-////            strErrorRet = strprintf("invalid superblock detected at height %d", nBlockHeight);
-////            return false;
-////        }
-//        LogPrint("gobject", "IsBlockValueValid -- No triggered superblock detected at height %d\n", nBlockHeight);
-//        if(!isBlockRewardValueMet) {
-//            strErrorRet = strprintf("coinbase pays too much at height %d (actual=%d vs limit=%d), exceeded block reward, no triggered superblock detected",
-//                                    nBlockHeight, block.vtx[0].GetValueOut(), blockReward);
-//        }
-    } else {
-//        // should NOT allow superblocks at all, when superblocks are disabled
         LogPrint("gobject", "IsBlockValueValid -- Superblocks are disabled, no superblocks allowed\n");
-        if (!isBlockRewardValueMet) {
+        if (!isBlockRewardValueMet)
+        {
             strErrorRet = strprintf("coinbase pays too much at height %d (actual=%d vs limit=%d), exceeded block reward, superblocks are disabled",
                                     nBlockHeight, block.vtx[0].GetValueOut(), blockReward);
         }
-    }
 
     // it MUST be a regular block
     return isBlockRewardValueMet;
@@ -133,12 +65,12 @@ bool IsBlockPayeeValid(const CTransaction &txNew, int nBlockHeight, CAmount bloc
     const Consensus::Params &consensusParams = Params().GetConsensus();
 
     if (nBlockHeight < HF_XNODE_PAYMENT_START) {
-        //there is no budget data to use to check anything, let's just accept the longest chain
+        //there is no data to use to check anything, let's just accept the longest chain
         if (fDebug) LogPrintf("IsBlockPayeeValid -- xnode isn't start\n");
         return true;
     }
     if (!xnodeSync.IsSynced()) {
-        //there is no budget data to use to check anything, let's just accept the longest chain
+        //there is no data to use to check anything, let's just accept the longest chain
         if (fDebug) LogPrintf("IsBlockPayeeValid -- WARNING: Client not synced, skipping block payee checks\n");
         return true;
     }

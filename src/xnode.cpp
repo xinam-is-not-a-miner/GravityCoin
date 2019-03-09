@@ -7,7 +7,6 @@
 #include "consensus/validation.h"
 #include "darksend.h"
 #include "init.h"
-//#include "governance.h"
 #include "xnode.h"
 #include "xnode-payments.h"
 #include "xnode-sync.h"
@@ -908,46 +907,7 @@ void CXnodePing::Relay() {
     RelayInv(inv);
 }
 
-//void CXnode::AddGovernanceVote(uint256 nGovernanceObjectHash)
-//{
-//    if(mapGovernanceObjectsVotedOn.count(nGovernanceObjectHash)) {
-//        mapGovernanceObjectsVotedOn[nGovernanceObjectHash]++;
-//    } else {
-//        mapGovernanceObjectsVotedOn.insert(std::make_pair(nGovernanceObjectHash, 1));
-//    }
-//}
-
-//void CXnode::RemoveGovernanceObject(uint256 nGovernanceObjectHash)
-//{
-//    std::map<uint256, int>::iterator it = mapGovernanceObjectsVotedOn.find(nGovernanceObjectHash);
-//    if(it == mapGovernanceObjectsVotedOn.end()) {
-//        return;
-//    }
-//    mapGovernanceObjectsVotedOn.erase(it);
-//}
-
 void CXnode::UpdateWatchdogVoteTime() {
     LOCK(cs);
     nTimeLastWatchdogVote = GetTime();
 }
-
-/**
-*   FLAG GOVERNANCE ITEMS AS DIRTY
-*
-*   - When xnode come and go on the network, we must flag the items they voted on to recalc it's cached flags
-*
-*/
-//void CXnode::FlagGovernanceItemsAsDirty()
-//{
-//    std::vector<uint256> vecDirty;
-//    {
-//        std::map<uint256, int>::iterator it = mapGovernanceObjectsVotedOn.begin();
-//        while(it != mapGovernanceObjectsVotedOn.end()) {
-//            vecDirty.push_back(it->first);
-//            ++it;
-//        }
-//    }
-//    for(size_t i = 0; i < vecDirty.size(); ++i) {
-//        mnodeman.AddDirtyGovernanceObjectHash(vecDirty[i]);
-//    }
-//}

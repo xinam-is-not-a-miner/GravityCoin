@@ -5,7 +5,6 @@
 #include "activexnode.h"
 #include "addrman.h"
 #include "darksend.h"
-//#include "governance.h"
 #include "xnode-payments.h"
 #include "xnode-sync.h"
 #include "xnodeman.h"
@@ -111,7 +110,6 @@ CXnodeMan::CXnodeMan() : cs(),
   fIndexRebuilt(false),
   fXnodesAdded(false),
   fXnodesRemoved(false),
-//  vecDirtyGovernanceObjectHashes(),
   nLastWatchdogVoteTime(0),
   mapSeenXnodeBroadcast(),
   mapSeenXnodePing(),
@@ -202,9 +200,6 @@ void CXnodeMan::CheckAndRemove()
                 // erase all of the broadcasts we've seen from this txin, ...
                 mapSeenXnodeBroadcast.erase(hash);
                 mWeAskedForXnodeListEntry.erase((*it).vin.prevout);
-
-                // and finally remove it from the list
-//                it->FlagGovernanceItemsAsDirty();
                 it = vXnodes.erase(it);
                 fXnodesRemoved = true;
             } else {
@@ -1730,13 +1725,6 @@ void CXnodeMan::NotifyXnodeUpdates()
         fXnodesRemovedLocal = fXnodesRemoved;
     }
 
-    if(fXnodesAddedLocal) {
-//        governance.CheckXnodeOrphanObjects();
-//        governance.CheckXnodeOrphanVotes();
-    }
-    if(fXnodesRemovedLocal) {
-//        governance.UpdateCachesAndClean();
-    }
 
     LOCK(cs);
     fXnodesAdded = false;

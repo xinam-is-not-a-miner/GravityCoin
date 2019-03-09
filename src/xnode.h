@@ -176,9 +176,6 @@ public:
     bool fAllowMixingTx;
     bool fUnitTest;
 
-    // KEEP TRACK OF GOVERNANCE ITEMS EACH XNODE HAS VOTE UPON FOR RECALCULATION
-    std::map<uint256, int> mapGovernanceObjectsVotedOn;
-
     CXnode();
     CXnode(const CXnode& other);
     CXnode(const CXnodeBroadcast& mnb);
@@ -208,7 +205,6 @@ public:
         READWRITE(nPoSeBanHeight);
         READWRITE(fAllowMixingTx);
         READWRITE(fUnitTest);
-        READWRITE(mapGovernanceObjectsVotedOn);
     }
 
     void swap(CXnode& first, CXnode& second) // nothrow
@@ -237,7 +233,6 @@ public:
         swap(first.nPoSeBanHeight, second.nPoSeBanHeight);
         swap(first.fAllowMixingTx, second.fAllowMixingTx);
         swap(first.fUnitTest, second.fUnitTest);
-        swap(first.mapGovernanceObjectsVotedOn, second.mapGovernanceObjectsVotedOn);
     }
 
     // CALCULATE A RANK AGAINST OF GIVEN BLOCK
@@ -298,13 +293,6 @@ public:
     int GetLastPaidTime() { return nTimeLastPaid; }
     int GetLastPaidBlock() { return nBlockLastPaid; }
     void UpdateLastPaid(const CBlockIndex *pindex, int nMaxBlocksToScanBack);
-
-    // KEEP TRACK OF EACH GOVERNANCE ITEM INCASE THIS NODE GOES OFFLINE, SO WE CAN RECALC THEIR STATUS
-    void AddGovernanceVote(uint256 nGovernanceObjectHash);
-    // RECALCULATE CACHED STATUS FLAGS FOR ALL AFFECTED OBJECTS
-    void FlagGovernanceItemsAsDirty();
-
-    void RemoveGovernanceObject(uint256 nGovernanceObjectHash);
 
     void UpdateWatchdogVoteTime();
 

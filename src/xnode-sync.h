@@ -39,8 +39,6 @@ private:
     // Last time when we received some xnode asset ...
     int64_t nTimeLastXnodeList;
     int64_t nTimeLastPaymentVote;
-    int64_t nTimeLastGovernanceItem;
-    // ... or failed
     int64_t nTimeLastFailure;
 
     // How many times we failed
@@ -58,9 +56,6 @@ public:
 
     void AddedXnodeList() { nTimeLastXnodeList = GetTime(); }
     void AddedPaymentVote() { nTimeLastPaymentVote = GetTime(); }
-    void AddedGovernanceItem() { nTimeLastGovernanceItem = GetTime(); };
-
-    void SendGovernanceSyncRequest(CNode* pnode);
 
     bool IsFailed() { return nRequestedXnodeAssets == XNODE_SYNC_FAILED; }
     bool IsBlockchainSynced(bool fBlockAccepted = false);
