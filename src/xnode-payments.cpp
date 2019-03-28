@@ -61,8 +61,6 @@ bool IsBlockValueValid(const CBlock &block, int nBlockHeight, CAmount blockRewar
 }
 
 bool IsBlockPayeeValid(const CTransaction &txNew, int nBlockHeight, CAmount blockReward) {
-    // we can only check xnode payment /
-    const Consensus::Params &consensusParams = Params().GetConsensus();
 
     if (nBlockHeight < HF_XNODE_PAYMENT_START) {
         //there is no data to use to check anything, let's just accept the longest chain
@@ -77,7 +75,7 @@ bool IsBlockPayeeValid(const CTransaction &txNew, int nBlockHeight, CAmount bloc
 
     //check for xnode payee
     if (mnpayments.IsTransactionValid(txNew, nBlockHeight)) {
-        LogPrint("mnpayments", "IsBlockPayeeValid -- Valid xnode payment at height %d: %s", nBlockHeight, txNew.ToString());
+        LogPrintf("mnpayments", "IsBlockPayeeValid -- Valid xnode payment at height %d: %s", nBlockHeight, txNew.ToString());
         return true;
     } else {
         if(nBlockHeight > HF_PAYEE_CHECK){
@@ -90,28 +88,14 @@ bool IsBlockPayeeValid(const CTransaction &txNew, int nBlockHeight, CAmount bloc
 }
 
 void FillBlockPayments(CMutableTransaction &txNew, int nBlockHeight, CAmount xnodePayment, CTxOut &txoutXnodeRet, std::vector <CTxOut> &voutSuperblockRet) {
-    // only create superblocks if spork is enabled AND if superblock is actually triggered
-    // (height should be validated inside)
-//    if(sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED) &&
-//        CSuperblockManager::IsSuperblockTriggered(nBlockHeight)) {
-//            LogPrint("gobject", "FillBlockPayments -- triggered superblock creation at height %d\n", nBlockHeight);
-//            CSuperblockManager::CreateSuperblock(txNew, nBlockHeight, voutSuperblockRet);
-//            return;
-//    }
 
-    // FILL BLOCK PAYEE WITH XNODE PAYMENT OTHERWISE
     mnpayments.FillBlockPayee(txNew, nBlockHeight, xnodePayment, txoutXnodeRet);
-    LogPrint("mnpayments", "FillBlockPayments -- nBlockHeight %d xnodePayment %lld txoutXnodeRet %s txNew %s",
+    LogPrintf("mnpayments", "FillBlockPayments -- nBlockHeight %d xnodePayment %lld txoutXnodeRet %s txNew %s",
              nBlockHeight, xnodePayment, txoutXnodeRet.ToString(), txNew.ToString());
 }
 
 std::string GetRequiredPaymentsString(int nBlockHeight) {
-    // IF WE HAVE A ACTIVATED TRIGGER FOR THIS HEIGHT - IT IS A SUPERBLOCK, GET THE REQUIRED PAYEES
-//    if(CSuperblockManager::IsSuperblockTriggered(nBlockHeight)) {
-//        return CSuperblockManager::GetRequiredPaymentsString(nBlockHeight);
-//    }
 
-    // OTHERWISE, PAY XNODE
     return mnpayments.GetRequiredPaymentsString(nBlockHeight);
 }
 
