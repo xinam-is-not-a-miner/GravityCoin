@@ -97,10 +97,6 @@ public:
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x322bad477efb4b33fa4b1f0b2861eaf543c61068da9898a95062fdb02ada486f"));
         assert(genesis.hashMerkleRoot == uint256S("0x31f49b23f8a1185f85a6a6972446e72a86d50ca0e3b3ffe217d0c2fea30473db"));
-        vSeeds.push_back(CDNSSeedData("138.185.116.66", "138.185.116.66"));
-        vSeeds.push_back(CDNSSeedData("138.185.116.67", "138.185.116.67"));
-        vSeeds.push_back(CDNSSeedData("138.185.116.68", "138.185.116.68"));
-        vSeeds.push_back(CDNSSeedData("138.185.116.69", "138.185.116.69"));
         vSeeds.push_back(CDNSSeedData("51.77.146.94", "51.77.146.94"));
         vSeeds.push_back(CDNSSeedData("51.83.43.2", "51.83.43.2"));
         vSeeds.push_back(CDNSSeedData("51.75.246.157", "51.75.246.157"));
